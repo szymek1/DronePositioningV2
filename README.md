@@ -3,7 +3,7 @@ A training system for UAV operators using Augmented Reality technologies
 
 ## Architecture overview
 ### General
- ![General scheme](docs\DronePositioningGeneralScheme.drawio.png)
+ ![General scheme](docs/DronePositioningGeneralScheme.png)
 
 The scheme above is the general depiction of the system, which consists of three separate components:
 - UAV: sends telemetry information: GPS&angular position, velocity and acceleration vectors through radio signals.
