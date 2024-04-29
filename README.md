@@ -14,7 +14,9 @@ The scheme above is the general depiction of the system, which consists of three
 TODO
 
 ### Microsoft HoloLens2
-TODO
+![HL2_scheme](docs/MicrosoftHL2.png)
+
+The diagram above represents the structure of Unity application running on HL2. Its main core is ```UDPSocket```, which listens to receive telemetry from a given ip address and later updates drone visualization.
 
 ### UAV
 TODO
