@@ -11,7 +11,7 @@ The scheme above is the general depiction of the system, which consists of three
 - Microsoft HoloLens2: runs Unity application that receives UAV position as a UDP client and updates the scene. It is responsible for displaying of visual guidance tips for operator as well as visual feeback regarding colision with obstacles.
 
 ### Windows desktop application
-TODO
+![Windows_app_scheme](docs/WindowsDesktopAppBackend.png)
 
 ### Microsoft HoloLens2
 ![HL2_scheme](docs/MicrosoftHL2.png)
