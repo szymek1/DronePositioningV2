@@ -3,7 +3,7 @@
 #include "IObservable.h"
 
 /**
- * @class IProcessor 
+ * @class IProcessor
  * @brief Interface defining telemetry processor.
  */
 class IProcessor

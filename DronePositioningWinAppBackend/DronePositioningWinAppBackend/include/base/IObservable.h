@@ -1,7 +1,9 @@
 #pragma once
 
+#include "../EventType.h"
+
 /**
- * @class IObservable 
+ * @class IObservable
  * @brief Interface defining observable.
  */
 class IObservable
