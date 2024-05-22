@@ -128,6 +128,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DronePositioningWinAppBackend.cpp" />
+    <ClCompile Include="src\EventsBus.cpp" />
+    <ClCompile Include="src\TelemetryProcessor.cpp" />
+    <ClCompile Include="src\TelemetryReceiver.cpp" />
+    <ClCompile Include="src\TelemetrySender.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\base\IObservable.h" />
+    <ClInclude Include="include\base\IProcessor.h" />
+    <ClInclude Include="include\base\ITelemetryReceiver.h" />
+    <ClInclude Include="include\base\ITelemetrySender.h" />
+    <ClInclude Include="include\EventsBus.h" />
+    <ClInclude Include="include\EventType.h" />
+    <ClInclude Include="include\TelemetryProcessor.h" />
+    <ClInclude Include="include\TelemetryReceiver.h" />
+    <ClInclude Include="include\TelemetrySender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
