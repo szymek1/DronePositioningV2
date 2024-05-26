@@ -3,8 +3,10 @@
 #include <string>
 #include <thread>
 #include <atomic>
+#include <memory>
 
 #include "ConnectionManager.h"
+#include "ConfigurationManager.h"
 #include "EventsBus.h"
 #include "TelemetryReceiver.h"
 #include "TelemetrySender.h"

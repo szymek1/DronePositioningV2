@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "FlightConfig.h"
 
@@ -17,7 +18,9 @@ public:
 	/**
 	 * @brief Load the configuration file
 	 * @param configFilePath The path to the configuration file
+	 * @return A unique pointer to the FlightConfig object;
+	 *		   MainController will take ownership of this object
 	 */
-	static void loadConfig(const std::string& configFilePath, FlightConfig& flightConfig);
+	static std::unique_ptr<FlightConfig> loadConfig(const std::string& configFilePath);
 };
 
