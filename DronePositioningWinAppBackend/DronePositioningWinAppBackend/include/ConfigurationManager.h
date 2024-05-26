@@ -17,8 +17,7 @@ public:
 	/**
 	 * @brief Load the configuration file
 	 * @param configFilePath The path to the configuration file
-	 * @return True if the configuration file was loaded successfully, false otherwise
 	 */
-	static loadConfig(const std::string& configFilePath, FlightConfig& flightConfig);
+	static void loadConfig(const std::string& configFilePath, FlightConfig& flightConfig);
 };
 
