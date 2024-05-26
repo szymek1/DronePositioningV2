@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <thread>
+#include <atomic>
 
 #include "ConnectionManager.h"
 #include "EventsBus.h"
@@ -26,7 +28,7 @@ public:
 	*
 	* @param flightConfigPath - path to the flight configuration file
 	*/
-	MainController(const std::string& flightConfigPath);
+	explicit MainController(const std::string& flightConfigPath);
 
 	/**
 	 * @brief Deconstructor for the Main Controller object
@@ -69,4 +71,7 @@ private:
 	/****************************************************
 	* Threading
 	*****************************************************/
+	std::thread m_connectionManagerThread;
+	std::thread m_eventBusThread;
+	std::atomic<bool> m_isRunning{ false }; // Flag to indicate if the application is running
 };
