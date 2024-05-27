@@ -128,8 +128,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DronePositioningWinAppBackend.cpp" />
+    <ClCompile Include="src\ConfigurationManager.cpp" />
     <ClCompile Include="src\ConnectionManager.cpp" />
     <ClCompile Include="src\EventsBus.cpp" />
+    <ClCompile Include="src\FlightConfig.cpp" />
     <ClCompile Include="src\MainController.cpp" />
     <ClCompile Include="src\TelemetryProcessor.cpp" />
     <ClCompile Include="src\TelemetryReceiver.cpp" />
@@ -140,9 +142,12 @@
     <ClInclude Include="include\base\IProcessor.h" />
     <ClInclude Include="include\base\ITelemetryReceiver.h" />
     <ClInclude Include="include\base\ITelemetrySender.h" />
+    <ClInclude Include="include\ConfigurationManager.h" />
+    <ClInclude Include="include\ConfigUtilities.h" />
     <ClInclude Include="include\ConnectionManager.h" />
     <ClInclude Include="include\EventsBus.h" />
     <ClInclude Include="include\EventType.h" />
+    <ClInclude Include="include\FlightConfig.h" />
     <ClInclude Include="include\MainController.h" />
     <ClInclude Include="include\TelemetryProcessor.h" />
     <ClInclude Include="include\TelemetryReceiver.h" />

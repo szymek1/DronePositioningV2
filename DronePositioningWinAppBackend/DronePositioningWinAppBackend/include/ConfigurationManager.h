@@ -5,6 +5,8 @@
 
 #include "FlightConfig.h"
 
+namespace configuration {
+
 /**
  * @class ConfigurationManager
  * @brief This class reads and parses the flight configuration file
@@ -23,4 +25,6 @@ public:
 	 */
 	static std::unique_ptr<FlightConfig> loadConfig(const std::string& configFilePath);
 };
+
+} // namespace configuration
 
