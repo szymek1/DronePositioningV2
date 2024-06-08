@@ -64,13 +64,13 @@ enum class CoorindatesSystem {
 };
 
 enum class AltitudeDifference {
-	DEFAULT, // 0
-	IGNORE //   1
+	DEFAULT, //  0
+	IGNORE  //   1
 };
 
 enum class ScoringMethod {
-	MAE, // 0
-	RMSE // 1
+	MAE,  // 0
+	RMSE //  1
 };
 
 /**
