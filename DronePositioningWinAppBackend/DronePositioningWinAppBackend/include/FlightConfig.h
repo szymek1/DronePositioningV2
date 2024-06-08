@@ -10,8 +10,20 @@ namespace configuration {
 class FlightConfig
 {
 public:
-	FlightConfig();
+	FlightConfig(OperatorPosition opPos,
+				 std::vector<Waypoint> waypoints,
+				 std::vector<Marker> markers,
+				 std::vector<Obstackle> obstacles,
+				 ExerciseInfo exerciseInfo,
+				 ConnectionConfigurationInfo connectionInfo);
 	~FlightConfig() = default;
+
+	const OperatorPosition& getOperatorPosition() const;
+	const std::vector<Waypoint>& getWaypoints() const;
+	const std::vector<Marker>& getMarkers() const;
+	const std::vector<Obstackle>& getObstacles() const;
+	const ExerciseInfo& getExerciseInfo() const;
+	const ConnectionConfigurationInfo& getConnectionConfigurationInfo() const;
 
 private:
 	/***********************************************

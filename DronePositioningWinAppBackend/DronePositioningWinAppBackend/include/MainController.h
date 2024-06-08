@@ -60,9 +60,9 @@ private:
 	/****************************************************
 	 * Telemetry Utilities
 	 ****************************************************/
-	TelemetryReceiver m_telemetryReceiverClient;
-	TelemetrySender  m_telemetrySenderServer;
-	TelemetryProcessor m_telemetryProcessor;
+	// TelemetryReceiver m_telemetryReceiverClient;
+	// TelemetrySender  m_telemetrySenderServer;
+	// TelemetryProcessor m_telemetryProcessor;
 
 	/****************************************************
 	* Connection & data exchange utilities

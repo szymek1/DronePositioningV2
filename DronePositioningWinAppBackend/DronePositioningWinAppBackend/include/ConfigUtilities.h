@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
+#include <regex>
 
 
 /**
@@ -10,6 +12,9 @@
  * - Marker
  */
 struct Point {
+
+	Point(double lat, double lon, double alt) : latitude(lat), longitude(lon), altitude(alt) {}
+
 	double latitude;
 	double longitude;
 	double altitude;
@@ -18,19 +23,34 @@ struct Point {
 /**
  * @brief Structure defining a position of the operator
  */
-struct OperatorPosition : public Point {};
+struct OperatorPosition : public Point {
+	OperatorPosition(double latitude, double longitude, double altitude)
+		: Point(latitude, longitude, altitude) {}
+};
 
 /**
  * @brief Structure defining a waypoint: 
  *		  a point in the space that the drone has to reach
  */
-struct Waypoint : public Point {};
+struct Waypoint : public Point {
+	Waypoint(double latitude, double longitude, double altitude)
+		: Point(latitude, longitude, altitude) {}
+};
 
 /**
  * @brief Structure defining a marker: 
  *		  a white circle placed on the ground level
  */
 struct Marker : public Point {
+
+	Marker(double latitude, double longitude, double altitude, double radius)
+		: Point(latitude, longitude, altitude) {
+		if (radius < 0) {
+			throw std::invalid_argument("Marker radius cannot be negative.");
+		}
+		this->radius = radius;
+	}
+
 	double radius;
 };
 
@@ -42,6 +62,17 @@ struct Marker : public Point {
  * - r1, r2, r3 represent rotation angles
  */
 struct Obstackle {
+
+	Obstackle(double centerX, double centerY, double centerZ, double width, double lenght, double height, double r1, double r2, double r3)
+		: centerX(centerX), centerY(centerY), centerZ(centerZ), r1(r1), r2(r2), r3(r3) {
+		if (width < 0 || lenght < 0 || height < 0) {
+			throw std::invalid_argument("Obstackle dimensions cannot be negative.");
+		}
+		this->width = width;
+		this->lenght = lenght;
+		this->height = height;
+	}
+
 	double centerX;
 	double centerY;
 	double centerZ;
@@ -98,6 +129,27 @@ struct ExerciseInfo {
  * @brief Structure defining a connection configuration
  */
 struct ConnectionConfigurationInfo {
+
+	ConnectionConfigurationInfo(std::string remoteIp, int port) {
+		if (!isValidPort(port) && !isValidIpAddress(remoteIp)) {
+			throw std::invalid_argument("Invalid port or IP address.");
+		}
+		this->remoteIp = remoteIp;
+	    this->port = port;
+	}
+
 	std::string remoteIp;
 	int port;
+
+private:
+	inline bool isValidPort(int port) const {
+		return (port >= 1024 && port <= 49151) || (port >= 49152 && port <= 65535);
+	}
+
+	inline bool isValidIpAddress(const std::string& ipAddress) const {
+		const std::regex pattern(
+			R"(^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$)"
+		);
+		return std::regex_match(ipAddress, pattern);
+	}
 };
