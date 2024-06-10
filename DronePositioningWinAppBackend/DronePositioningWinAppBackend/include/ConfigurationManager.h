@@ -2,8 +2,12 @@
 
 #include <string>
 #include <memory>
+#include <filesystem>
+#include <fstream>
+#include <exception>
 
 #include "FlightConfig.h"
+#include <filesystem>
 
 namespace configuration {
 
@@ -23,7 +27,7 @@ public:
 	 * @return A unique pointer to the FlightConfig object;
 	 *		   MainController will take ownership of this object
 	 */
-	static std::unique_ptr<FlightConfig> loadConfig(const std::string& configFilePath);
+	static std::unique_ptr<FlightConfig> loadConfig(const std::filesystem::path& configFilePath);
 };
 
 } // namespace configuration
