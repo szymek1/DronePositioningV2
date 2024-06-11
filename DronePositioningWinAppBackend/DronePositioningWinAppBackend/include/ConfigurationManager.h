@@ -1,10 +1,12 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <memory>
 #include <filesystem>
 #include <fstream>
 #include <exception>
+#include <string_view>
 
 #include "FlightConfig.h"
 #include <filesystem>
@@ -28,6 +30,9 @@ public:
 	 *		   MainController will take ownership of this object
 	 */
 	static std::unique_ptr<FlightConfig> loadConfig(const std::filesystem::path& configFilePath);
+
+private:
+
 };
 
 } // namespace configuration

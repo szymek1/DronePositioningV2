@@ -26,6 +26,7 @@ struct Point {
 struct OperatorPosition : public Point {
 	OperatorPosition(double latitude, double longitude, double altitude)
 		: Point(latitude, longitude, altitude) {}
+	OperatorPosition() : Point(0, 0, 0) {}
 };
 
 /**
@@ -63,8 +64,8 @@ struct Marker : public Point {
  */
 struct Obstackle {
 
-	Obstackle(double centerX, double centerY, double centerZ, double width, double lenght, double height, double r1, double r2, double r3)
-		: centerX(centerX), centerY(centerY), centerZ(centerZ), r1(r1), r2(r2), r3(r3) {
+	Obstackle(double centerX, double centerY, double centerZ, double width, double lenght, double height, double rX, double rY, double rZ)
+		: centerX(centerX), centerY(centerY), centerZ(centerZ), rX(rX), rY(rY), rZ(rZ) {
 		if (width < 0 || lenght < 0 || height < 0) {
 			throw std::invalid_argument("Obstackle dimensions cannot be negative.");
 		}
@@ -79,9 +80,9 @@ struct Obstackle {
 	double width;
 	double lenght;
 	double height;
-	double r1;
-	double r2;
-	double r3;
+	double rX;
+	double rY;
+	double rZ;
 };
 
 /***********************************************
@@ -119,7 +120,7 @@ struct ExerciseInfo {
 	float targetSpeed;
 	int accuracy;						    // distance to waypoint in meters to set next one as target 
 	int pausingTime;						// hover time at waypoints, in seconds
-	int targetBearings;						// UCS bearing in deg [0,360), -1 for next waypoint, -2 for none
+	signed int targetBearings;				// UCS bearing in deg [0,360), -1 for next waypoint, -2 for none
 	bool showWaypoints;
 	bool showGuideline;
 	ScoringMethod scoringMethod;
@@ -137,6 +138,7 @@ struct ConnectionConfigurationInfo {
 		this->remoteIp = remoteIp;
 	    this->port = port;
 	}
+	ConnectionConfigurationInfo() : remoteIp("0.0.0.0"), port(60000) {}
 
 	std::string remoteIp;
 	int port;
