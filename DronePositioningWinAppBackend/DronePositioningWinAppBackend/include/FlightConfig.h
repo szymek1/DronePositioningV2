@@ -26,7 +26,13 @@ public:
 	const ExerciseInfo& getExerciseInfo() const;
 	const ConnectionConfigurationInfo& getConnectionConfigurationInfo() const;
 
+	/**
+	* @brief Present loaded configuration
+	*/
+	void displayLoadedConfiguration() const;
+
 private:
+	
 	/***********************************************
 	* Objects to display during the flight
 	************************************************/

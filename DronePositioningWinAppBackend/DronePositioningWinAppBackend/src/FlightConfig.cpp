@@ -42,3 +42,8 @@ const ConnectionConfigurationInfo& configuration::FlightConfig::getConnectionCon
 {
 	return m_connectionConfigurationInfo;
 }
+
+void configuration::FlightConfig::displayLoadedConfiguration() const
+{
+	// TODO
+}

@@ -4,6 +4,7 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <iostream>
 
 #include "ConnectionManager.h"
 #include "ConfigurationManager.h"
@@ -30,7 +31,7 @@ public:
 	*
 	* @param flightConfigPath - path to the flight configuration file
 	*/
-	explicit MainController(const std::filesystem::path& flightConfigPath);
+	explicit MainController(const std::filesystem::path& flightConfigPath, bool isVerbose = false);
 
 	/**
 	 * @brief Deconstructor for the Main Controller object
@@ -55,7 +56,7 @@ private:
 	 * @brief Call ConfigurationManager  read and parse, then load necessary flight data.
 	 * @return Boolean value indicating if the initialization was successful.
 	 */
-	bool initialize_();
+	bool initialize_(const std::filesystem::path& flightConfigPath);
 
 	/****************************************************
 	 * Telemetry Utilities
@@ -77,4 +78,9 @@ private:
 	std::thread m_connectionManagerThread;
 	std::thread m_eventBusThread;
 	std::atomic<bool> m_isRunning{ false }; // Flag to indicate if the application is running
+
+	/****************************************************
+	* Logging
+	*****************************************************/
+	bool m_verbose;
 };
