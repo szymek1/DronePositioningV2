@@ -213,6 +213,8 @@ namespace configuration {
             }
 		}
 
+        file.close();
+
         std::unique_ptr<FlightConfig> flConf = std::make_unique<FlightConfig>(
             std::move(operatorPosition),
             std::move(waypoints),
