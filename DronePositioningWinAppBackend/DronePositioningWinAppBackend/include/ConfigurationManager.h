@@ -9,7 +9,7 @@
 #include <string_view>
 
 #include "FlightConfig.h"
-#include <filesystem>
+
 
 namespace configuration {
 
@@ -30,8 +30,6 @@ public:
 	 *		   MainController will take ownership of this object
 	 */
 	static std::unique_ptr<FlightConfig> loadConfig(const std::filesystem::path& configFilePath);
-
-private:
 
 };
 

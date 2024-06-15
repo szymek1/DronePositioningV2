@@ -30,7 +30,7 @@ public:
 	*
 	* @param flightConfigPath - path to the flight configuration file
 	*/
-	explicit MainController(const std::string& flightConfigPath);
+	explicit MainController(const std::filesystem::path& flightConfigPath);
 
 	/**
 	 * @brief Deconstructor for the Main Controller object
@@ -60,6 +60,7 @@ private:
 	/****************************************************
 	 * Telemetry Utilities
 	 ****************************************************/
+	std::unique_ptr<configuration::FlightConfig> m_flightConfig;
 	// TelemetryReceiver m_telemetryReceiverClient;
 	// TelemetrySender  m_telemetrySenderServer;
 	// TelemetryProcessor m_telemetryProcessor;

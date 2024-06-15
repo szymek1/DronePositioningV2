@@ -5,6 +5,7 @@
 
 #include "ConfigUtilities.h"
 
+
 namespace configuration {
 
 class FlightConfig
