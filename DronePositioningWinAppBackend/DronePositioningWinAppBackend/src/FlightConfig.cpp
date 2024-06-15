@@ -44,7 +44,6 @@ const ConnectionConfigurationInfo& configuration::FlightConfig::getConnectionCon
 }
 
 void configuration::FlightConfig::displayLoadedConfiguration() const {
-
     fmt::print("\n=== Flight Configuration ===\n");
     fmt::print("Exercise:\n");
     fmt::print("  Title:           {}\n", m_exerciseInfo.title);
