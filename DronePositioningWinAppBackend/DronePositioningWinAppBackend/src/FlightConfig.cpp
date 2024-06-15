@@ -43,7 +43,61 @@ const ConnectionConfigurationInfo& configuration::FlightConfig::getConnectionCon
 	return m_connectionConfigurationInfo;
 }
 
-void configuration::FlightConfig::displayLoadedConfiguration() const
-{
-	// TODO
+void configuration::FlightConfig::displayLoadedConfiguration() const {
+
+    fmt::print("\n=== Flight Configuration ===\n");
+    fmt::print("Exercise:\n");
+    fmt::print("  Title:           {}\n", m_exerciseInfo.title);
+    fmt::print("  Author:          {}\n", m_exerciseInfo.author);
+    fmt::print("  Coordinates System: {}\n",
+             m_exerciseInfo.coordinatesSystem == CoorindatesSystem::GPS
+                 ? "GPS"
+                 : "UCS");
+    fmt::print("  Altitude Difference: {}\n",
+             m_exerciseInfo.altitudeDifference == AltitudeDifference::DEFAULT
+                 ? "Default"
+                 : "Ignore");
+    fmt::print("  guidelineOffset: {}\n", m_exerciseInfo.guidelineOffset);
+    fmt::print("  distanceWeight:  {}\n", m_exerciseInfo.distanceWeight);
+    fmt::print("  altitudeWeight:  {}\n", m_exerciseInfo.altitudeWeight);
+    fmt::print("  speedWeight:     {}\n", m_exerciseInfo.speedWeight);
+    fmt::print("  targetSpeed:     {}\n", m_exerciseInfo.targetSpeed);
+    fmt::print("  accuracy:        {}\n", m_exerciseInfo.accuracy);
+    fmt::print("  pausingTime:     {}\n", m_exerciseInfo.pausingTime);
+    fmt::print("  targetBearings:  {}\n", m_exerciseInfo.targetBearings);
+    fmt::print("  showWaypoints:   {}\n", m_exerciseInfo.showWaypoints);
+    fmt::print("  showGuideline:   {}\n", m_exerciseInfo.showGuideline);
+    fmt::print("  Scoring Method:  {}\n",
+               m_exerciseInfo.scoringMethod == ScoringMethod::MAE
+                   ? "MAE"
+                   : "RMSE");
+
+    fmt::print("\nConnection:\n");
+    fmt::print("  Remote IP:       {}\n", m_connectionConfigurationInfo.remoteIp);
+    fmt::print("  Port:            {}\n", m_connectionConfigurationInfo.port);
+
+    fmt::print("\nOperator Position:\n");
+    fmt::print("  Latitude:        {}\n", m_operatorPosition.latitude);
+    fmt::print("  Longitude:       {}\n", m_operatorPosition.longitude);
+    fmt::print("  Altitude:        {}\n", m_operatorPosition.altitude);
+
+    fmt::print("\nWaypoints ({}):\n", m_waypoints.size());
+    for (const auto& wp : m_waypoints) {
+      fmt::print("  ({}, {}, {})\n", wp.latitude, wp.longitude, wp.altitude);
+    }
+
+    fmt::print("\nMarkers ({}):\n", m_markers.size());
+    for (const auto& marker : m_markers) {
+      fmt::print("  ({}, {}, {}) - Radius: {}\n", marker.latitude,
+               marker.longitude, marker.altitude, marker.radius);
+    }
+
+    fmt::print("\nObstacles ({}):\n", m_obstacles.size());
+    for (const auto& obst : m_obstacles) {
+      fmt::print("  Center: ({}, {}, {})\n", obst.centerX, obst.centerY,
+               obst.centerZ);
+      fmt::print("  Dimensions: ({}, {}, {})\n", obst.width, obst.lenght,
+               obst.height);
+      fmt::print("  Rotation: ({}, {}, {})\n", obst.rX, obst.rY, obst.rZ);
+    }
 }

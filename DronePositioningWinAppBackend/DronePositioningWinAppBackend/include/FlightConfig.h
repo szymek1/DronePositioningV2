@@ -1,7 +1,11 @@
 #pragma once
+#define FMT_HEADER_ONLY
 
 #include <string>
 #include <vector>
+
+#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "ConfigUtilities.h"
 

@@ -1,0 +1,3 @@
+[submodule "DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/fmt"]
+	path = DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/fmt
+	url = https://github.com/fmtlib/fmt.git

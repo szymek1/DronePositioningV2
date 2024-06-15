@@ -1,12 +1,10 @@
-#include <iostream>
-
-#include "include/ConfigurationManager.h"
+#include "include/MainController.h"
 
 
-int main()
-{
+int main() {
     std::filesystem::path p = R"(C:\Users\bogus\Documents\myProjects\UAV_PW\Cyprian\GCSServer\GCSServer\Cw3c_10.txt)";
-    std::unique_ptr<configuration::FlightConfig> fl = configuration::ConfigurationManager::loadConfig(p);
+    bool verbosity = true;
+    MainController mc = MainController(p, verbosity);
     return 0;
 }
 
