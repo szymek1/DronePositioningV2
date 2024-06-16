@@ -4,12 +4,19 @@ MainController::MainController(const std::filesystem::path& flightConfigPath, bo
 {
 	if (initialize_(flightConfigPath)) {
 		std::cout << "Configuration loaded" << std::endl;
+        if (isVerbose) {
+            m_flightConfig->displayLoadedConfiguration();
+        }
+    } else {
+        std::cout << "Couldnt load the configuration" << std::endl;
 	}
 
-	if (isVerbose) {
-		m_flightConfig->displayLoadedConfiguration();
-	}
+	
+	// TODO: prepare run method: focus on threading and proper shutdown of them, next move one to proper callback
+	//		 with EventBus
 }
+
+void MainController::run() {}
 
 bool MainController::initialize_(const std::filesystem::path& flightConfigPath)
 {

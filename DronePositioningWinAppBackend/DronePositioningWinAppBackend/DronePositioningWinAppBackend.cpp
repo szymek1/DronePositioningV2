@@ -2,8 +2,30 @@
 
 
 int main() {
-    std::filesystem::path p = R"(C:\Users\bogus\Documents\myProjects\UAV_PW\Cyprian\GCSServer\GCSServer\Cw3c_10.txt)";
-    bool verbosity = true;
+    std::string raw_input; // C:\Users\bogus\Documents\myProjects\UAV_PW\Cyprian\GCSServer\GCSServer\Cw3c_10.txt
+    std::string raw_verbosity;
+
+    std::cout << "Please specify the path for the flight configuration file: ";
+    std::getline(std::cin, raw_input);
+    std::filesystem::path p(raw_input);
+
+    std::cout << "\n";
+    bool isVerbositySetCorrect = false;
+    bool verbosity = false;
+    while (!isVerbositySetCorrect) {
+      std::cout << "Do you want the output to be verbose?[yes/no]: ";
+      std::getline(std::cin, raw_verbosity);
+
+      if (raw_verbosity == "yes") {
+        verbosity = true;
+        isVerbositySetCorrect = true;
+      } else if (raw_verbosity == "no") {
+        isVerbositySetCorrect = true;
+      } else {
+        std::cout << "Type yes or no !" << std::endl;
+      }
+    }
+    
     MainController mc = MainController(p, verbosity);
     return 0;
 }
