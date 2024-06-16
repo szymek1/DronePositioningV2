@@ -16,7 +16,20 @@ MainController::MainController(const std::filesystem::path& flightConfigPath, bo
 	//		 with EventBus
 }
 
-void MainController::run() {}
+void MainController::run() {
+	m_isRunning = true;
+    std::cout << "Running MainController" << std::endl;
+    // TODO: launch threads etc...
+    while (m_isRunning) {
+        
+    }
+    std::cout << "Shutting down..." << std::endl;
+}
+
+bool MainController::shutdown() { 
+	m_isRunning = false;
+	return true; 
+}
 
 bool MainController::initialize_(const std::filesystem::path& flightConfigPath)
 {

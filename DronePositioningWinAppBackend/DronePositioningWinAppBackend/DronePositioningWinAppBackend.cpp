@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "include/MainController.h"
 
 
@@ -27,6 +29,23 @@ int main() {
     }
     
     MainController mc = MainController(p, verbosity);
+
+    std::thread runThread([&mc]() { mc.run(); });
+    std::cout << "Application is running, type STOP to terminate: ";
+
+    std::string input;
+    while (std::getline(std::cin, input)) {
+      if (input == "STOP") {
+        if (mc.shutdown()) {
+          break;
+        }
+      } else {
+        std::cout << "Type STOP to terminate" << std::endl;
+      }
+    }
+
+    runThread.join();
+
     return 0;
 }
 
