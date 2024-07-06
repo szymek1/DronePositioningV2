@@ -11,9 +11,6 @@ class ITelemetryReceiver
 {
 public:
 
-	/**
-	* @brief Default destructor.
-	*/
 	virtual ~ITelemetryReceiver() = default;
 
 	/**

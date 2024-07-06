@@ -10,9 +10,6 @@ class ITelemetrySender
 {
 public:
 
-	/**
-	* @brief Default destructor.
-	*/
 	virtual ~ITelemetrySender() = default;
 
 protected:

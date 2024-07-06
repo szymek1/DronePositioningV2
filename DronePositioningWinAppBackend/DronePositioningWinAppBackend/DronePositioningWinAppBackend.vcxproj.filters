@@ -86,5 +86,8 @@
     <ClInclude Include="include\ConfigUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\base\IObserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

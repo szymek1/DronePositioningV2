@@ -10,9 +10,6 @@ class IProcessor
 {
 public:
 
-	/**
-	* @brief Default destructor.
-	*/
 	virtual ~IProcessor() = default;
 
 	/**
