@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "base/IPublisher.h"
 #include "base/ISubscriber.h"
