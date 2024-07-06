@@ -133,6 +133,7 @@
     <ClCompile Include="DronePositioningWinAppBackend.cpp" />
     <ClCompile Include="src\ConfigurationManager.cpp" />
     <ClCompile Include="src\ConnectionManager.cpp" />
+    <ClCompile Include="src\Events.cpp" />
     <ClCompile Include="src\EventsBus.cpp" />
     <ClCompile Include="src\FlightConfig.cpp" />
     <ClCompile Include="src\MainController.cpp" />
@@ -141,14 +142,16 @@
     <ClCompile Include="src\TelemetrySender.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\base\IObservable.h" />
-    <ClInclude Include="include\base\IObserver.h" />
+    <ClInclude Include="include\base\IEvent.h" />
+    <ClInclude Include="include\base\IPublisher.h" />
+    <ClInclude Include="include\base\ISubscriber.h" />
     <ClInclude Include="include\base\IProcessor.h" />
     <ClInclude Include="include\base\ITelemetryReceiver.h" />
     <ClInclude Include="include\base\ITelemetrySender.h" />
     <ClInclude Include="include\ConfigurationManager.h" />
     <ClInclude Include="include\ConfigUtilities.h" />
     <ClInclude Include="include\ConnectionManager.h" />
+    <ClInclude Include="include\Events.h" />
     <ClInclude Include="include\EventsBus.h" />
     <ClInclude Include="include\EventType.h" />
     <ClInclude Include="include\FlightConfig.h" />

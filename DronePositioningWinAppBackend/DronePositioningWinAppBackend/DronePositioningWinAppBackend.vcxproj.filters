@@ -42,6 +42,9 @@
     <ClCompile Include="src\FlightConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Events.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TelemetryReceiver.h">
@@ -65,7 +68,7 @@
     <ClInclude Include="include\base\ITelemetrySender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\base\IObservable.h">
+    <ClInclude Include="include\base\IPublisher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\base\IProcessor.h">
@@ -86,7 +89,13 @@
     <ClInclude Include="include\ConfigUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\base\IObserver.h">
+    <ClInclude Include="include\base\ISubscriber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base\IEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
