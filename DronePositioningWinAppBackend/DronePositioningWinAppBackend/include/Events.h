@@ -6,6 +6,8 @@
 #include "base/IEvent.h"
 
 
+using Event = std::variant<TelemetryEvent, ConnectionEvent, AppTerminationEvent>;
+
 /**
  * @brief Event holding new telemetry
  */

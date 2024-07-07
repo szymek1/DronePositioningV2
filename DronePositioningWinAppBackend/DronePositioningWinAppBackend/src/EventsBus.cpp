@@ -39,7 +39,7 @@ void EventsBus::notifySubscribersOnTopic(const EventType eventType,
   for (auto weak_observer_it = m_subscriptionsMap[eventType].begin();
        weak_observer_it != m_subscriptionsMap[eventType].end();) {
     if (auto shared_observer = weak_observer_it->lock()) {
-      shared_observer->onEvent(eventType, event);
+      shared_observer->onEvent(event);
       ++weak_observer_it;
     } else {
       weak_observer_it = m_subscriptionsMap[eventType].erase(weak_observer_it);

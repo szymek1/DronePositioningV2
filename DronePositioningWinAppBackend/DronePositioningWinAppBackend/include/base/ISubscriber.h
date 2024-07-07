@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "../EventType.h"
+#include "../Events.h"
 
 
 /**
@@ -12,37 +12,47 @@
 class ISubscriber {
 public:
   virtual ~ISubscriber() = default;
+
+  virtual void onEvent(const Event &event) = 0;
 };
 
+/****************************************************
+ * An example of subscriber object
+ ****************************************************/
 
-/**
- * @class INewTelemetryObserver
- * @brief Interface defining observer for EventType::TELEMETRY_UPDATE
- */
-class INewTelemetryObserver: public ISubscriber {
+/*
+#include "base/ISubscriber.hpp"
+
+
+class GenericSub : public ISubscriber {
 public:
-  virtual ~INewTelemetryObserver() = default;
-  virtual void onNotify(const std::vector<float> &data) = 0;
+    GenericSub() = default;
+    ~GenericSub() = default;
+
+    void onEvent(const Event& event) override {
+        std::visit([this](const auto& e) {
+        using T = std::decay_t<decltype(e)>;
+        if constexpr (std::is_same_v<T, TelemetryEvent>) {
+            onEvent_(e);
+        } else if constexpr (std::is_same_v<T, ConnectionEvent>) {
+            onEvent_(e);
+        } 
+        else {
+            std::cerr << "Unexpected event type received." << std::endl;
+        }
+    }, event);
+    }
+
+private:
+    void onEvent_(const TelemetryEvent& data) {
+        for (auto const& d : data.telemetry) {
+            std::cout << d << std::endl;
+        }
+    }
+    void onEvent_(const ConnectionEvent& status) {
+        std::cout << "Status: " << status.isConnected << std::endl;
+    }
 };
+*/
 
 
-/**
- * @class IConnectionStatusObserver
- * @brief Interface defining observer for EventType::CONNECTION_UPDATE
- */
-class IConnectionStatusObserver: public ISubscriber {
-public:
-  virtual ~IConnectionStatusObserver() = default;
-  virtual void onNotify(const bool &isConnected) = 0;
-};
-
-
-/**
- * @class IAppTerminateObserver
- * @brief Interface defining observer for EventType::APP_TERMINATION
- */
-class IAppTerminateObserver: public ISubscriber {
-public:
-  virtual ~IAppTerminateObserver() = default;
-  virtual void onNotify() = 0;
-};

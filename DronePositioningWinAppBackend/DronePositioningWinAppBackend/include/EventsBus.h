@@ -24,7 +24,7 @@ public:
    *                                              IProcessor         (TELEMETRY_UPDATE)
    *                                              ConnectionManager  (CONNECTION_UPDATE, APP_TERMINATION)
    */
-  void addSubscriber(EventType eventType,
+  void addSubscriber(const EventType eventType,
                      const std::shared_ptr<ISubscriber> &observer);
 
   /**
@@ -38,7 +38,7 @@ public:
    *                                              IProcessor        (TELEMETRY_UPDATE) 
    *											  ConnectionManager (CONNECTION_UPDATE, APP_TERMINATION)
    */
-  void removeSubscriber(EventType eventType,
+  void removeSubscriber(const EventType eventType,
                         const std::shared_ptr<ISubscriber> &observer);
 
   /**

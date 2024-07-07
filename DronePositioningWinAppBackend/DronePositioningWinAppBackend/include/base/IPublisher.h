@@ -6,8 +6,6 @@
 #include "../Events.h"
 
 
-using Event = std::variant<TelemetryEvent, ConnectionEvent, AppTerminationEvent>;
-
 /**
  * @class IPublisher
  * @brief Interface defining observable.
