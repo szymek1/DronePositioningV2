@@ -1,9 +1,11 @@
 #include "../include/MainController.h"
 
-MainController::MainController(const std::filesystem::path& flightConfigPath, bool isVerbose)
-{
+MainController::MainController(const std::filesystem::path &flightConfigPath,
+                               EventsBus &bus, bool isVerbose) {
 	if (initialize_(flightConfigPath)) {
 		std::cout << "Configuration loaded" << std::endl;
+        m_publisher = bus.getPublisher();
+
         if (isVerbose) {
             m_flightConfig->displayLoadedConfiguration();
         }

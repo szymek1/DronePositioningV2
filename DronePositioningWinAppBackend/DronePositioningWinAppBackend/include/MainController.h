@@ -6,6 +6,7 @@
 #include <memory>
 #include <iostream>
 
+#include "base/IPublisher.h"
 #include "ConnectionManager.h"
 #include "ConfigurationManager.h"
 #include "EventsBus.h"
@@ -31,7 +32,8 @@ public:
 	*
 	* @param flightConfigPath - path to the flight configuration file
 	*/
-	explicit MainController(const std::filesystem::path& flightConfigPath, bool isVerbose = false);
+  explicit MainController(const std::filesystem::path &flightConfigPath,
+                          EventsBus &bus, bool isVerbose = false);
 
 	/**
 	 * @brief Deconstructor for the Main Controller object
@@ -70,7 +72,7 @@ private:
 	* Connection & data exchange utilities
 	****************************************************/
 	ConnectionManager m_connectionManager;
-	EventsBus m_eventBus;
+    IPublisher *m_publisher;
 
 	/****************************************************
 	* Threading
