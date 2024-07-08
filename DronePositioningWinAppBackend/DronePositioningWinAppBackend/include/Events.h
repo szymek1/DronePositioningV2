@@ -2,11 +2,10 @@
 
 #include <vector>
 #include <string>
+#include <variant>
 
 #include "base/IEvent.h"
 
-
-using Event = std::variant<TelemetryEvent, ConnectionEvent, AppTerminationEvent>;
 
 /**
  * @brief Event holding new telemetry
@@ -48,3 +47,6 @@ struct AppTerminationEvent : public IEvent {
   AppTerminationEvent(bool status);
   const bool isAppTerminating;
 };
+
+using Event =
+    std::variant<TelemetryEvent, ConnectionEvent, AppTerminationEvent>;
