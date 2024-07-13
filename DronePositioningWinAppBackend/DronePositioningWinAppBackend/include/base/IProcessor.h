@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IObservable.h"
-
 /**
  * @class IProcessor
  * @brief Interface defining telemetry processor.
@@ -13,11 +11,16 @@ public:
 	virtual ~IProcessor() = default;
 
 	/**
-	* @brief Process telemetry.
-	*/
-	virtual void process() = 0;
+    * @brief Process telemetry- call appropriate implementation.
+    */
+	void process();
 
-protected:
+private:
+
+    /**
+    * @brief Process telemetry.
+    */
+    virtual void process_() = 0;
 
 	/**
 	* @brief Generate report.

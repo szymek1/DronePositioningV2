@@ -68,15 +68,16 @@ private:
     EventsBusPublisher(EventsBus &bus);
     ~EventsBusPublisher() = default;
 
-    /**
-     * @brief publish data of a particualr event with a correct event type
-     * indicator
-     * @param eventType on which event the bus should publish new information
-     * @param event data passed within the event
-     */
-    void publish(const EventType eventType, const Event &event) override;
-
   private:
+
+    /**
+    * @brief publish data of a particualr event with a correct event type
+    * indicator
+    * @param eventType on which event the bus should publish new information
+    * @param event data passed within the event
+    */
+    void publish_(const EventType eventType, const Event &event) override final;
+    
     EventsBus &m_eventsBus;
   };
 

@@ -136,6 +136,7 @@
     <ClCompile Include="src\Events.cpp" />
     <ClCompile Include="src\EventsBus.cpp" />
     <ClCompile Include="src\FlightConfig.cpp" />
+    <ClCompile Include="src\GenericSubscriber.cpp" />
     <ClCompile Include="src\MainController.cpp" />
     <ClCompile Include="src\TelemetryProcessor.cpp" />
     <ClCompile Include="src\TelemetryReceiver.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="include\EventsBus.h" />
     <ClInclude Include="include\EventType.h" />
     <ClInclude Include="include\FlightConfig.h" />
+    <ClInclude Include="include\GenericSubscriber.h" />
     <ClInclude Include="include\MainController.h" />
     <ClInclude Include="include\TelemetryProcessor.h" />
     <ClInclude Include="include\TelemetryReceiver.h" />

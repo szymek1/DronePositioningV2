@@ -50,7 +50,7 @@ void EventsBus::notifySubscribersOnTopic(const EventType eventType,
 EventsBus::EventsBusPublisher::EventsBusPublisher(EventsBus &bus)
     : m_eventsBus(bus) {}
 
-void EventsBus::EventsBusPublisher::publish(const EventType eventType,
+void EventsBus::EventsBusPublisher::publish_(const EventType eventType,
                                             const Event &event) {
   m_eventsBus.notifySubscribersOnTopic(eventType, event);
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IObservable.h"
-
 /**
  * @class ITelemetrySender
  * @brief Interface defining telemetry sender.
@@ -12,10 +10,15 @@ public:
 
 	virtual ~ITelemetrySender() = default;
 
-protected:
+	/**
+    * @brief Send telemetry via given method- call appropriate implementation.
+    */
+	void sendPosition();
+
+private:
 
 	/**
-	* @brief Send telemetry via UDP.
+	* @brief Send telemetry via given method.
 	*/
 	virtual void sendPosition_() = 0;
 };

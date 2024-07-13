@@ -7,14 +7,26 @@
 
 
 /**
- * @class IObserver
- * @brief Interface defining base observer.
+ * @class ISubscriber
+ * @brief Interface defining base subscriber.
  */
 class ISubscriber {
 public:
   virtual ~ISubscriber() = default;
 
-  virtual void onEvent(const Event &event) = 0;
+  /**
+  * @brief Respond to particular event- call appropriate implementation.
+  * @param event type of event
+  */
+  void onEvent(const Event &event);
+
+private:
+
+  /**
+  * @brief Respond to particular event
+  * @param event type of event
+  */
+  virtual void onEvent_(const Event &event) = 0;
 };
 
 /****************************************************

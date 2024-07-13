@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IProcessor.h"
-#include "IObservable.h"
 
 /**
 * @class ITelemetryReceiver
@@ -14,16 +13,26 @@ public:
 	virtual ~ITelemetryReceiver() = default;
 
 	/**
-	* @brief Begin receiving telemetry.
+	* @brief Begin receiving telemetry- call appropriate implementation.
 	*/
-	virtual void receive() = 0;
+	void receive();
 
 	/**
-	* @brief Stop receiving telemetry.
+	* @brief Stop receiving telemetry- call appropriate implementation.
 	*/
-	virtual void stop() = 0;
+	void stop();
 
-protected:
+private:
+
+	/**
+	* @brief Begin receiving telemetry.
+	*/
+	virtual void receive_() = 0;
+
+	/**
+    * @brief Stop receiving telemetry.
+    */
+    virtual void stop_() = 0;
 
 	/**
 	 * @brief Register received telemetry to the EventBus
