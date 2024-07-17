@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <mutex>
 
 #include "base/IPublisher.h"
 #include "base/ISubscriber.h"
@@ -51,6 +52,7 @@ public:
 private:
   using SubscribersVec = std::vector<std::weak_ptr<ISubscriber>>;
   using SubscriptionsMap = std::unordered_map<EventType, SubscribersVec>;
+  using EventsMutexMap = std::unordered_map<EventType, std::mutex>;
 
   /**
    * @brief notify all subscribers of the given event about an update
@@ -82,7 +84,13 @@ private:
   };
 
   SubscriptionsMap m_subscriptionsMap;
+  EventsMutexMap m_eventsMtxMap;
+  std::mutex m_getPublisherMtx;
+  std::mutex m_addSubMtx;
+  std::mutex m_rmvSubMtx;
+
   std::unique_ptr<EventsBusPublisher> m_publisher;
+  
 
 };
 

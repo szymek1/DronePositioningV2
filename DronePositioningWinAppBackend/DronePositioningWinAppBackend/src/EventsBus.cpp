@@ -3,9 +3,12 @@
 
 void EventsBus::addSubscriber(const EventType eventType,
                               std::shared_ptr<ISubscriber> &subscriber) {
+  
+  std::lock_guard<std::mutex> lock(m_addSubMtx);
   auto topic_iterator = m_subscriptionsMap.find(eventType);
   if (topic_iterator == m_subscriptionsMap.end()) {
     m_subscriptionsMap[eventType] = SubscribersVec();
+    m_eventsMtxMap.emplace(eventType, std::mutex{});
   }
 
   m_subscriptionsMap[eventType].push_back(subscriber);
@@ -13,6 +16,8 @@ void EventsBus::addSubscriber(const EventType eventType,
 
 void EventsBus::removeSubscriber(
     const EventType eventType, std::shared_ptr<ISubscriber> &subscriber) {
+  
+  std::lock_guard<std::mutex> lock(m_rmvSubMtx);
   auto topic_iterator = m_subscriptionsMap.find(eventType);
   if (topic_iterator != m_subscriptionsMap.end()) {
     m_subscriptionsMap[eventType].erase(
@@ -28,6 +33,7 @@ void EventsBus::removeSubscriber(
 }
 
 IPublisher *EventsBus::getPublisher() {
+  std::lock_guard<std::mutex> lock(m_getPublisherMtx);
   if (!m_publisher) {
     m_publisher = std::make_unique<EventsBusPublisher>(*this);
   }
@@ -36,6 +42,7 @@ IPublisher *EventsBus::getPublisher() {
 
 void EventsBus::notifySubscribersOnTopic(const EventType eventType,
                                          const Event &event) {
+  std::lock_guard<std::mutex> lock(m_eventsMtxMap[eventType]);
   for (auto weak_observer_it = m_subscriptionsMap[eventType].begin();
        weak_observer_it != m_subscriptionsMap[eventType].end();) {
     if (auto shared_observer = weak_observer_it->lock()) {
