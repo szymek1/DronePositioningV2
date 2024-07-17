@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 /**
  * @class ITelemetrySender
  * @brief Interface defining telemetry sender.
@@ -13,13 +15,13 @@ public:
 	/**
     * @brief Send telemetry via given method- call appropriate implementation.
     */
-	void sendPosition();
+    void sendPosition(const std::vector<float> &telemetry);
 
 private:
 
 	/**
 	* @brief Send telemetry via given method.
 	*/
-	virtual void sendPosition_() = 0;
+  virtual void sendPosition_(const std::vector<float> &telemetry) = 0;
 };
 

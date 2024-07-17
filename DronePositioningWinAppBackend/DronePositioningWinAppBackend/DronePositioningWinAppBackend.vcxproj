@@ -131,6 +131,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DronePositioningWinAppBackend.cpp" />
+    <ClCompile Include="include\base\IProcessor.cpp" />
+    <ClCompile Include="include\base\IPublisher.cpp" />
+    <ClCompile Include="include\base\ISubscriber.cpp" />
+    <ClCompile Include="include\base\ITelemetryReceiver.cpp" />
+    <ClCompile Include="include\base\ITelemetrySender.cpp" />
     <ClCompile Include="src\ConfigurationManager.cpp" />
     <ClCompile Include="src\ConnectionManager.cpp" />
     <ClCompile Include="src\Events.cpp" />
