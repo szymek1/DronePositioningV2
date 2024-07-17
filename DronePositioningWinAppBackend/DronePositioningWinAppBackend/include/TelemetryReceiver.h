@@ -16,7 +16,7 @@
 class TelemetryReceiver : public ITelemetryReceiver {
 public:
 
-	explicit TelemetryReceiver(EventsBus &bus, std::atomic_bool& appStatus);
+	explicit TelemetryReceiver(EventsBus &bus, std::shared_ptr<IProcessor> processor, std::atomic_bool& appStatus);
 	~TelemetryReceiver() = default;
 
 
@@ -43,12 +43,11 @@ private:
     *****************************************************/
 	IPublisher *m_publisher;
     std::vector<float> m_currTelemetry;
-    std::unique_ptr<IProcessor> m_telemetryProcessor;
+    std::shared_ptr<IProcessor> m_telemetryProcessor;
 
 	/****************************************************
      * Synchronization
      *****************************************************/
     std::atomic_bool& m_isRunning;
-    std::unique_ptr<IProcessor> m_telemetryProcessor;
 };
 

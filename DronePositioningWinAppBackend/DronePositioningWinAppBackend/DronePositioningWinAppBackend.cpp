@@ -1,7 +1,6 @@
 #include <thread>
 
 #include "include/MainController.h"
-#include "include/EventsBus.h"
 
 
 int main() {

@@ -2,10 +2,10 @@
 
 
 TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
+                                     std::shared_ptr<IProcessor> processor,
                                      std::atomic_bool &appStatus)
-	: m_isRunning(appStatus) {
+    : m_telemetryProcessor(processor), m_isRunning(appStatus) {
   m_publisher = bus.getPublisher();
-  m_telemetryProcessor = std::make_unique<IProcessor>(bus);
 }
 
 void TelemetryReceiver::receive_() {

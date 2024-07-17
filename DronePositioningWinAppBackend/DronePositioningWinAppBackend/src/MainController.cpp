@@ -1,10 +1,10 @@
 #include "../include/MainController.h"
 
-MainController::MainController(const std::filesystem::path &flightConfigPath,
-                               EventsBus &bus, bool isVerbose) {
+MainController::MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus,
+                               bool isVerbose) : m_bus(bus), m_verbose(isVerbose) {
 	if (initialize_(flightConfigPath)) {
 		std::cout << "Configuration loaded" << std::endl;
-        m_publisher = bus.getPublisher();
+        m_publisher = m_bus.getPublisher();
 
 		m_isRunning.store(false);
 
@@ -23,6 +23,15 @@ MainController::MainController(const std::filesystem::path &flightConfigPath,
 void MainController::run() {
 	m_isRunning.store(true);
     std::cout << "Running MainController" << std::endl;
+
+	m_telemetryProcessor = std::make_shared<TelemetryProcessor>();
+    m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
+        m_bus, m_telemetryProcessor, m_isRunning);
+    m_telemetrySender = std::make_shared<TelemetrySender>();
+
+	m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetrySender);
+    m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetryProcessor);
+
     // TODO: launch threads etc...
     while (m_isRunning.load()) {
         // Main loop

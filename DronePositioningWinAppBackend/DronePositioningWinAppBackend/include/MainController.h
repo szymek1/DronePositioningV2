@@ -7,12 +7,15 @@
 #include <iostream>
 
 #include "base/IPublisher.h"
+#include "base/ITelemetryReceiver.h"
+#include "base/ITelemetrySender.h"
+#include "base/IProcessor.h"
+#include "TelemetryProcessor.h"
+#include "TelemetryReceiver.h"
+#include "TelemetrySender.h"
 #include "ConnectionManager.h"
 #include "ConfigurationManager.h"
 #include "EventsBus.h"
-#include "TelemetryReceiver.h"
-#include "TelemetrySender.h"
-#include "TelemetryProcessor.h"
 
 /**
  * @class MainController
@@ -32,8 +35,8 @@ public:
 	*
 	* @param flightConfigPath - path to the flight configuration file
 	*/
-  explicit MainController(const std::filesystem::path &flightConfigPath,
-                          EventsBus &bus, bool isVerbose = false);
+    explicit MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus,
+                          bool isVerbose = false);
 
 	/**
 	 * @brief Deconstructor for the Main Controller object
@@ -61,20 +64,25 @@ private:
 	bool initialize_(const std::filesystem::path& flightConfigPath);
 
 	/****************************************************
-	 * Telemetry Utilities
-	 ****************************************************/
+	* Telemetry Utilities
+	****************************************************/
 	std::unique_ptr<configuration::FlightConfig> m_flightConfig;
+    std::shared_ptr<ITelemetryReceiver> m_telemetryReceiver;
+    std::shared_ptr<ISubscriber> m_telemetryProcessor; 
+    std::shared_ptr<ISubscriber> m_telemetrySender;
+
 
 	/****************************************************
 	* Connection & data exchange utilities
 	****************************************************/
 	ConnectionManager m_connectionManager;
+    EventsBus& m_bus;
     IPublisher *m_publisher;
 
 	/****************************************************
 	* Threading
 	*****************************************************/
-	std::thread m_connectionManagerThread;
+	std::jthread m_connectionManagerThread;
 	std::atomic_bool m_isRunning; // Flag to indicate if the application is running
 
 	/****************************************************

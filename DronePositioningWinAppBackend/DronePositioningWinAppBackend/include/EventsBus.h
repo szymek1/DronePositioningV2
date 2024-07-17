@@ -25,7 +25,7 @@ public:
    *                                              ConnectionManager  (CONNECTION_UPDATE, APP_TERMINATION)
    */
   void addSubscriber(const EventType eventType,
-                     const std::shared_ptr<ISubscriber> &observer);
+                     std::shared_ptr<ISubscriber> &observer);
 
   /**
    * @brief Remove subscriber
@@ -39,7 +39,7 @@ public:
    *											  ConnectionManager (CONNECTION_UPDATE, APP_TERMINATION)
    */
   void removeSubscriber(const EventType eventType,
-                        const std::shared_ptr<ISubscriber> &observer);
+                        std::shared_ptr<ISubscriber> &observer);
 
   /**
    * @brief Return publisher in order to acces the bus from an object 

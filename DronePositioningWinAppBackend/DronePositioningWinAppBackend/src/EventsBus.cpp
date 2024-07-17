@@ -2,7 +2,7 @@
 
 
 void EventsBus::addSubscriber(const EventType eventType,
-                              const std::shared_ptr<ISubscriber> &subscriber) {
+                              std::shared_ptr<ISubscriber> &subscriber) {
   auto topic_iterator = m_subscriptionsMap.find(eventType);
   if (topic_iterator == m_subscriptionsMap.end()) {
     m_subscriptionsMap[eventType] = SubscribersVec();
@@ -12,7 +12,7 @@ void EventsBus::addSubscriber(const EventType eventType,
 }
 
 void EventsBus::removeSubscriber(
-    const EventType eventType, const std::shared_ptr<ISubscriber> &subscriber) {
+    const EventType eventType, std::shared_ptr<ISubscriber> &subscriber) {
   auto topic_iterator = m_subscriptionsMap.find(eventType);
   if (topic_iterator != m_subscriptionsMap.end()) {
     m_subscriptionsMap[eventType].erase(
