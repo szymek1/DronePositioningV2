@@ -6,6 +6,8 @@ MainController::MainController(const std::filesystem::path &flightConfigPath,
 		std::cout << "Configuration loaded" << std::endl;
         m_publisher = bus.getPublisher();
 
+		m_isRunning.store(false);
+
         if (isVerbose) {
             m_flightConfig->displayLoadedConfiguration();
         }
@@ -19,17 +21,22 @@ MainController::MainController(const std::filesystem::path &flightConfigPath,
 }
 
 void MainController::run() {
-	m_isRunning = true;
+	m_isRunning.store(true);
     std::cout << "Running MainController" << std::endl;
     // TODO: launch threads etc...
-    while (m_isRunning) {
-        
+    while (m_isRunning.load()) {
+        // Main loop
     }
     std::cout << "Shutting down..." << std::endl;
 }
 
 bool MainController::shutdown() { 
-	m_isRunning = false;
+	m_isRunning.store(false);
+
+	// Announce shutdown
+    AppTerminationEvent terminationEvent(true);
+    m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+
 	return true; 
 }
 

@@ -64,9 +64,6 @@ private:
 	 * Telemetry Utilities
 	 ****************************************************/
 	std::unique_ptr<configuration::FlightConfig> m_flightConfig;
-	// TelemetryReceiver m_telemetryReceiverClient;
-	// TelemetrySender  m_telemetrySenderServer;
-	// TelemetryProcessor m_telemetryProcessor;
 
 	/****************************************************
 	* Connection & data exchange utilities
@@ -78,8 +75,7 @@ private:
 	* Threading
 	*****************************************************/
 	std::thread m_connectionManagerThread;
-	std::thread m_eventBusThread;
-	std::atomic<bool> m_isRunning{ false }; // Flag to indicate if the application is running
+	std::atomic_bool m_isRunning; // Flag to indicate if the application is running
 
 	/****************************************************
 	* Logging
