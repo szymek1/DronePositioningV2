@@ -13,6 +13,7 @@ void TelemetrySender::onEvent_(const TelemetryEvent &event) {
 
 void TelemetrySender::sendPosition_(const std::vector<float> &telemetry) {
   if (m_verbose) {
+    std::cout << "TelemetrySender received: " << std::endl;
     for (const auto &t : telemetry) {
       std::cout << t << " ";
     }

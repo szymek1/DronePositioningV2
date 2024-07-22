@@ -24,7 +24,7 @@ void MainController::run() {
 	m_isRunning.store(true);
     std::cout << "Running MainController" << std::endl;
 
-	m_telemetryProcessor = std::make_shared<TelemetryProcessor>();
+	m_telemetryProcessor = std::make_shared<TelemetryProcessor>(m_verbose);
     m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
         m_bus, m_isRunning, m_verbose);
     m_telemetrySender = std::make_shared<TelemetrySender>(m_verbose);
