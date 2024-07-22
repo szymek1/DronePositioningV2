@@ -26,8 +26,8 @@ void MainController::run() {
 
 	m_telemetryProcessor = std::make_shared<TelemetryProcessor>();
     m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
-        m_bus, m_isRunning);
-    m_telemetrySender = std::make_shared<TelemetrySender>();
+        m_bus, m_isRunning, m_verbose);
+    m_telemetrySender = std::make_shared<TelemetrySender>(m_verbose);
     // TelemetryProcessor was removed from TelemetryReceiver constructor
     // due to appraently errors with types. It might be launched from here or there's a need
     // for a workaround
@@ -36,6 +36,10 @@ void MainController::run() {
         std::dynamic_pointer_cast<ITelemetryReceiver>(m_telemetryReceiver);
     auto m_telemetrySenderConn =
         std::dynamic_pointer_cast<ITelemetrySender>(m_telemetrySender);
+
+    if (!m_telemetryReceiverConn || !m_telemetrySenderConn) {
+      throw std::runtime_error("Couldnt create telemetry utilities. Aborting...");
+    }
 
 	m_connectionManager = std::make_shared<ConnectionManager>(
         m_telemetryReceiverConn, m_telemetrySenderConn, m_verbose);
@@ -59,7 +63,7 @@ void MainController::run() {
 
       connMgr->disconnect();
     } else {
-      // Handle the case where the cast failed (log an error, etc.)
+        throw std::runtime_error("Couldnt create telemetry utilities. Aborting...");
     }
     
     std::cout << "Shutting down..." << std::endl;

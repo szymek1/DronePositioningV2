@@ -4,6 +4,7 @@
 #include <thread>
 #include <memory>
 #include <atomic>
+#include <iostream>
 
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"
@@ -16,7 +17,7 @@
 class TelemetryReceiver : public ITelemetryReceiver {
 public:
 
-	explicit TelemetryReceiver(EventsBus &bus, std::atomic_bool& appStatus);
+	explicit TelemetryReceiver(EventsBus &bus, std::atomic_bool& appStatus, bool isVerbose=false);
 	~TelemetryReceiver() = default;
 
 
@@ -37,6 +38,10 @@ private:
     */
 	void registerTelemetryEvent_() override final;
 
+    /****************************************************
+    * Logging
+    *****************************************************/
+    bool m_verbose;
 
 	/****************************************************
     * Publishing

@@ -3,6 +3,7 @@
 #include <thread>
 #include <memory>
 #include <atomic>
+#include <iostream>
 
 #include "base/ISubscriber.h"
 #include "base/ITelemetryReceiver.h"

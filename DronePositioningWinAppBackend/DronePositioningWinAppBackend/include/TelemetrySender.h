@@ -13,7 +13,7 @@
 */
 class TelemetrySender : public ITelemetrySender, public ISubscriber {
 public:
-    explicit TelemetrySender();
+    explicit TelemetrySender(bool isVerbose=false);
 
 private:
 
@@ -28,5 +28,10 @@ private:
      * @param event new telemetry data
      */
     void onEvent_(const TelemetryEvent &event) override final;
+
+    /****************************************************
+    * Logging
+    *****************************************************/
+    bool m_verbose;
 };
 

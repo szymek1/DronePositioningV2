@@ -9,7 +9,7 @@ ConnectionManager::ConnectionManager(
       m_verbose(isVerbose) {
 
     if (m_verbose) {
-        // Log it
+        std::cout << "ConnectionManager: instanitated" << std::endl;
     }
 
 }
@@ -21,6 +21,9 @@ void ConnectionManager::connect() {
 
 void ConnectionManager::disconnect() { 
     m_telemetryReceiver->stop();
+    if (m_verbose) {
+        std::cout << "ConnectionManager: terminating" << std::endl;
+    }
 }
 
 void ConnectionManager::onEvent_(const ConnectionEvent &event) {}
