@@ -2,12 +2,11 @@
 
 
 ConnectionManager::ConnectionManager(
-    const configuration::FlightConfig &config,
     std::shared_ptr<ITelemetryReceiver> receiver,
-    const std::shared_ptr<ITelemetrySender> sender, std::atomic_bool &appStatus,
+    std::shared_ptr<ITelemetrySender> sender,
     bool isVerbose)
-    : m_config(config), m_telemetryReceiver(receiver), m_telemetrySender(sender), 
-      m_isRunning(appStatus), m_verbose(isVerbose) {
+    : m_telemetryReceiver(receiver), m_telemetrySender(sender), 
+      m_verbose(isVerbose) {
 
     if (m_verbose) {
         // Log it
@@ -18,12 +17,11 @@ ConnectionManager::ConnectionManager(
 void ConnectionManager::connect() {
   m_receiverThread =
       std::jthread(&ITelemetryReceiver::receive, m_telemetryReceiver);
-
-  m_senderThread =
-      std::jthread(&ITelemetrySender::sendPosition, m_telemetrySender);
 }
 
-void ConnectionManager::disconnect() {}
+void ConnectionManager::disconnect() { 
+    m_telemetryReceiver->stop();
+}
 
 void ConnectionManager::onEvent_(const ConnectionEvent &event) {}
 

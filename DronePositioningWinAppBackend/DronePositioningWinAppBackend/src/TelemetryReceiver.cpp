@@ -2,9 +2,8 @@
 
 
 TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
-                                     std::shared_ptr<IProcessor> processor,
                                      std::atomic_bool &appStatus)
-    : m_telemetryProcessor(processor), m_isRunning(appStatus) {
+    : m_isRunning(appStatus) {
   m_publisher = bus.getPublisher();
 }
 

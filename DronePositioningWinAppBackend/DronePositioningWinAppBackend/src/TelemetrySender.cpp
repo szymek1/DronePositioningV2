@@ -6,7 +6,7 @@ TelemetrySender::TelemetrySender() {
 }
 
 void TelemetrySender::onEvent_(const TelemetryEvent &event) {
-  sendPosition_(event.telemetry);
+  sendPosition(event.telemetry);
 }
 
 void TelemetrySender::sendPosition_(const std::vector<float> &telemetry) {

@@ -75,7 +75,7 @@ private:
 	/****************************************************
 	* Connection & data exchange utilities
 	****************************************************/
-	ConnectionManager m_connectionManager;
+    std::shared_ptr<ISubscriber> m_connectionManager;
     EventsBus& m_bus;
     IPublisher *m_publisher;
 

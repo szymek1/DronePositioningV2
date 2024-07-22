@@ -18,10 +18,9 @@
 */
 class ConnectionManager : public ISubscriber {
 public:
-  explicit ConnectionManager(const configuration::FlightConfig &config,
+  explicit ConnectionManager(
                              std::shared_ptr<ITelemetryReceiver> receiver,
                              std::shared_ptr<ITelemetrySender> sender,
-                             std::atomic_bool &appStatus,
                              bool isVerbose = false);
   ~ConnectionManager() = default;
 
@@ -50,11 +49,6 @@ private:
   void onEvent_(const AppTerminationEvent &event) override final;
 
   /****************************************************
-  * Flight Configuration
-  ****************************************************/
-  const configuration::FlightConfig &m_config;
-
-  /****************************************************
   * Telemetry Utilities
   ****************************************************/
   std::shared_ptr<ITelemetryReceiver> m_telemetryReceiver;
@@ -64,8 +58,6 @@ private:
   * Threading
   *****************************************************/
   std::jthread m_receiverThread;
-  std::jthread m_senderThread;
-  std::atomic_bool &m_isRunning;
 
   /****************************************************
   * Logging

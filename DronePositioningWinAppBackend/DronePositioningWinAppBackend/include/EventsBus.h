@@ -52,7 +52,7 @@ public:
 private:
   using SubscribersVec = std::vector<std::weak_ptr<ISubscriber>>;
   using SubscriptionsMap = std::unordered_map<EventType, SubscribersVec>;
-  using EventsMutexMap = std::unordered_map<EventType, std::mutex>;
+  using EventsMutexMap = std::unordered_map<EventType, std::shared_ptr<std::mutex>>;
 
   /**
    * @brief notify all subscribers of the given event about an update

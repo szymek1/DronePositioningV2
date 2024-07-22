@@ -1,6 +1,7 @@
 #include <thread>
 
 #include "include/MainController.h"
+#include "include/EventsBus.h"
 
 
 int main() {
@@ -28,7 +29,8 @@ int main() {
       }
     }
     
-    MainController mc = MainController(p, verbosity);
+    EventsBus eventsBus = EventsBus();
+    MainController mc = MainController(p, eventsBus, verbosity);
 
     std::jthread runThread([&mc]() { mc.run(); });
     std::cout << "Application is running, type STOP to terminate: ";
@@ -43,8 +45,6 @@ int main() {
         std::cout << "Type STOP to terminate" << std::endl;
       }
     }
-
-    runThread.join();
 
     return 0;
 }

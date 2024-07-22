@@ -26,16 +26,42 @@ void MainController::run() {
 
 	m_telemetryProcessor = std::make_shared<TelemetryProcessor>();
     m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
-        m_bus, m_telemetryProcessor, m_isRunning);
+        m_bus, m_isRunning);
     m_telemetrySender = std::make_shared<TelemetrySender>();
+    // TelemetryProcessor was removed from TelemetryReceiver constructor
+    // due to appraently errors with types. It might be launched from here or there's a need
+    // for a workaround
+
+    auto m_telemetryReceiverConn =
+        std::dynamic_pointer_cast<ITelemetryReceiver>(m_telemetryReceiver);
+    auto m_telemetrySenderConn =
+        std::dynamic_pointer_cast<ITelemetrySender>(m_telemetrySender);
+
+	m_connectionManager = std::make_shared<ConnectionManager>(
+        m_telemetryReceiverConn, m_telemetrySenderConn, m_verbose);
+        
 
 	m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetrySender);
     m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetryProcessor);
+    m_bus.addSubscriber(EventType::CONNECTION_UPDATE, m_connectionManager);
+    m_bus.addSubscriber(EventType::APP_TERMINATION, m_connectionManager);
 
     // TODO: launch threads etc...
-    while (m_isRunning.load()) {
+    auto connMgr =
+        std::dynamic_pointer_cast<ConnectionManager>(m_connectionManager);
+    
+    if (connMgr) {
+      m_connectionManagerThread =
+          std::jthread(&ConnectionManager::connect, connMgr);
+      while (m_isRunning.load()) {
         // Main loop
+      }
+
+      connMgr->disconnect();
+    } else {
+      // Handle the case where the cast failed (log an error, etc.)
     }
+    
     std::cout << "Shutting down..." << std::endl;
 }
 

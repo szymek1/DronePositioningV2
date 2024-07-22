@@ -8,7 +8,8 @@ void EventsBus::addSubscriber(const EventType eventType,
   auto topic_iterator = m_subscriptionsMap.find(eventType);
   if (topic_iterator == m_subscriptionsMap.end()) {
     m_subscriptionsMap[eventType] = SubscribersVec();
-    m_eventsMtxMap.emplace(eventType, std::mutex{});
+    m_eventsMtxMap[eventType] = std::make_shared<std::mutex>();
+    // m_eventsMtxMap.emplace(eventType, std::mutex{});
   }
 
   m_subscriptionsMap[eventType].push_back(subscriber);
@@ -42,7 +43,7 @@ IPublisher *EventsBus::getPublisher() {
 
 void EventsBus::notifySubscribersOnTopic(const EventType eventType,
                                          const Event &event) {
-  std::lock_guard<std::mutex> lock(m_eventsMtxMap[eventType]);
+  std::lock_guard<std::mutex> lock(*m_eventsMtxMap[eventType]);
   for (auto weak_observer_it = m_subscriptionsMap[eventType].begin();
        weak_observer_it != m_subscriptionsMap[eventType].end();) {
     if (auto shared_observer = weak_observer_it->lock()) {

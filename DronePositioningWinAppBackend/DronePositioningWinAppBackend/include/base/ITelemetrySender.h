@@ -22,6 +22,6 @@ private:
 	/**
 	* @brief Send telemetry via given method.
 	*/
-  virtual void sendPosition_(const std::vector<float> &telemetry) = 0;
+    virtual void sendPosition_(const std::vector<float> &telemetry) = 0;
 };
 
