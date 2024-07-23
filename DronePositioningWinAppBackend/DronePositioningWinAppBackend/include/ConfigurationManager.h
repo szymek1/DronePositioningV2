@@ -15,7 +15,7 @@ namespace configuration {
 
 /**
  * @class ConfigurationManager
- * @brief This class reads and parses the flight configuration file
+ * @brief This class reads and parses the flight configuration file.
  */
 class ConfigurationManager
 {
@@ -25,7 +25,7 @@ public:
 
 	/**
 	 * @brief Load the configuration file
-	 * @param configFilePath The path to the configuration file
+	 * @param configFilePath: the path to the configuration file
 	 * @return A unique pointer to the FlightConfig object;
 	 *		   MainController will take ownership of this object
 	 */

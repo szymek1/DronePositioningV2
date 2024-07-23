@@ -2,7 +2,7 @@
 
 
 /**
- * @brief Interface defining a generic Event
+ * @brief Interface defining a generic Event.
  */
 struct IEvent {
   virtual ~IEvent() = default;

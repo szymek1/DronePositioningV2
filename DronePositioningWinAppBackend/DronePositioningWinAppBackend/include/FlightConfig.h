@@ -12,6 +12,11 @@
 
 namespace configuration {
 
+/**
+* @class FlightConfig 
+* @brief Class representing flight configuration for a specific
+*		 training session.
+*/
 class FlightConfig
 {
 public:
@@ -31,7 +36,7 @@ public:
 	const ConnectionConfigurationInfo& getConnectionConfigurationInfo() const;
 
 	/**
-	* @brief Present loaded configuration
+	* @brief Present loaded configuration.
 	*/
 	void displayLoadedConfiguration() const;
 

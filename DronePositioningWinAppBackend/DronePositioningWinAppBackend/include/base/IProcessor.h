@@ -15,7 +15,7 @@ public:
 
 	/**
     * @brief Process telemetry- call appropriate implementation.
-    * @param telemetry new telemetry to process.
+    * @param telemetry: new telemetry to process.
     */
     void process(const std::vector<float> &telemetry);
 
@@ -23,7 +23,7 @@ private:
 
     /**
     * @brief Process telemetry.
-    * @param telemetry new telemetry to process.
+    * @param telemetry: new telemetry to process.
     */
     virtual void process_(const std::vector<float> &telemetry) = 0;
 

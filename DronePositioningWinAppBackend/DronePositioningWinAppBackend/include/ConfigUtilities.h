@@ -21,7 +21,7 @@ struct Point {
 };
 
 /**
- * @brief Structure defining a position of the operator
+ * @brief Structure defining a position of the operator.
  */
 struct OperatorPosition : public Point {
 	OperatorPosition(double latitude, double longitude, double altitude)
@@ -31,7 +31,7 @@ struct OperatorPosition : public Point {
 
 /**
  * @brief Structure defining a waypoint: 
- *		  a point in the space that the drone has to reach
+ *		  a point in the space that the drone has to reach.
  */
 struct Waypoint : public Point {
 	Waypoint(double latitude, double longitude, double altitude)
@@ -40,7 +40,7 @@ struct Waypoint : public Point {
 
 /**
  * @brief Structure defining a marker: 
- *		  a white circle placed on the ground level
+ *		  a white circle placed on the ground level.
  */
 struct Marker : public Point {
 
@@ -106,7 +106,7 @@ enum class ScoringMethod {
 };
 
 /**
- * @brief Structure defining an exercise
+ * @brief Structure defining an exercise.
  */
 struct ExerciseInfo {
 	std::string title;
@@ -127,7 +127,7 @@ struct ExerciseInfo {
 };
 
 /**
- * @brief Structure defining a connection configuration
+ * @brief Structure defining a connection configuration.
  */
 struct ConnectionConfigurationInfo {
 

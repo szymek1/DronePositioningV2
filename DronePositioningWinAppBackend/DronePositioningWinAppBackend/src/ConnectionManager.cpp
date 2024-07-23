@@ -20,16 +20,21 @@ void ConnectionManager::connect() {
 }
 
 void ConnectionManager::disconnect() { 
-    m_telemetryReceiver->stop();
     if (m_verbose) {
-        std::cout << "ConnectionManager: terminating" << std::endl;
+        std::cout << "ConnectionManager: stopping TelemetryReceiver" << std::endl;
     }
+    m_telemetryReceiver->stop();
 }
 
 void ConnectionManager::onEvent_(const ConnectionEvent &event) {}
 
 void ConnectionManager::onEvent_(const AppTerminationEvent &event) {
-  disconnect();
+  if (event.isAppTerminating) {
+    if (m_verbose) {
+      std::cout << "ConnectionManager: terminating" << std::endl;
+    }
+    disconnect();
+  }
 }
 
 

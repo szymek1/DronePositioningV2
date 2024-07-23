@@ -11,16 +11,20 @@
 
 class EventsBus {
 public:
+
+  /**
+   * @brief Constructor.
+   */
   explicit EventsBus() = default;
   ~EventsBus() = default;
 
   /**
-   * @brief Add subscriber to unordered map of subscribers
-   * @param eventType type of event: 
+   * @brief Add subscriber to unordered map of subscribers.
+   * @param eventType: type of event: 
    *								TELEMETRY_UPDATE,
    * 								CONNECTION_UPDATE,
    *								APP_TERMINATION
-   * @param observer object representing observer:
+   * @param observer: object representing observer:
    *											  ITelemetrySender   (TELEMETRY_UPDATE)
    *                                              IProcessor         (TELEMETRY_UPDATE)
    *                                              ConnectionManager  (CONNECTION_UPDATE, APP_TERMINATION)
@@ -29,12 +33,12 @@ public:
                      std::shared_ptr<ISubscriber> &observer);
 
   /**
-   * @brief Remove subscriber
-   * @param eventType type of event:
+   * @brief Remove subscriber.
+   * @param eventType: type of event:
    *								TELEMETRY_UPDATE,
    * 								CONNECTION_UPDATE,
    *								APP_TERMINATION
-   * @param observer object representing observer:
+   * @param observer: object representing observer:
    *											  ITelemetrySender  (TELEMETRY_UPDATE) 
    *                                              IProcessor        (TELEMETRY_UPDATE) 
    *											  ConnectionManager (CONNECTION_UPDATE, APP_TERMINATION)
@@ -44,8 +48,8 @@ public:
 
   /**
    * @brief Return publisher in order to acces the bus from an object 
-   *		that wants to publish data
-   * @return pointer to generic publisher
+   *		that wants to publish data.
+   * @return pointer to generic publisher.
    */
   IPublisher *getPublisher();
 
@@ -55,15 +59,15 @@ private:
   using EventsMutexMap = std::unordered_map<EventType, std::shared_ptr<std::mutex>>;
 
   /**
-   * @brief notify all subscribers of the given event about an update
-   * @param eventType type of event which has been updated
-   * @param event data which is the update
+   * @brief Notify all subscribers of the given event about an update.
+   * @param eventType: type of event which has been updated.
+   * @param event: data which is the update.
    */
   void notifySubscribersOnTopic(const EventType eventType, const Event &event);
 
   /**
    * @brief Internal publisher which components which want to publish use to communicate
-   *        with EventsBus
+   *        with EventsBus.
    */
   class EventsBusPublisher : public IPublisher {
   public:
@@ -73,10 +77,10 @@ private:
   private:
 
     /**
-    * @brief publish data of a particualr event with a correct event type
-    * indicator
-    * @param eventType on which event the bus should publish new information
-    * @param event data passed within the event
+    * @brief Publish data of a particualr event with a correct event type
+    *        indicator.
+    * @param eventType: on which event the bus should publish new information.
+    * @param event data passed within the event.
     */
     void publish_(const EventType eventType, const Event &event) override final;
     
@@ -91,6 +95,5 @@ private:
 
   std::unique_ptr<EventsBusPublisher> m_publisher;
   
-
 };
 

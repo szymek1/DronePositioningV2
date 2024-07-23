@@ -14,7 +14,7 @@ public:
 
 	/**
     * @brief Send telemetry via given method- call appropriate implementation.
-	* @param telemetry new telemetry to process.
+	* @param telemetry: new telemetry to process.
     */
     void sendPosition(const std::vector<float> &telemetry);
 
@@ -22,7 +22,7 @@ private:
 
 	/**
 	* @brief Send telemetry via given method.
-	* @param telemetry new telemetry to process.
+	* @param telemetry: new telemetry to process.
 	*/
     virtual void sendPosition_(const std::vector<float> &telemetry) = 0;
 };

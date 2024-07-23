@@ -8,27 +8,27 @@
 
 
 /**
- * @brief Event holding new telemetry
+ * @brief Event holding new telemetry.
  */
 struct TelemetryEvent : public IEvent {
 
   /**
    * @brief Constructor
-   * @param data vector of telemtry
+   * @param data: vector of telemtry.
    */
   TelemetryEvent(std::vector<float> data);
   const std::vector<float> telemetry;
 };
 
 /**
- * @brief Event holding new connection status
+ * @brief Event holding new connection status.
  */
 struct ConnectionEvent : public IEvent {
 
   /**
-   * @brief Constructor
-   * @param status current connection status from a component
-   * @param who component name
+   * @brief Constructor.
+   * @param status: current connection status from a component.
+   * @param who: component name.
    */
   ConnectionEvent(bool status, const std::string& who);
   const std::string whichComponent;
@@ -36,13 +36,13 @@ struct ConnectionEvent : public IEvent {
 };
 
 /**
- * @brief Event holding app termination call
+ * @brief Event holding app termination call.
  */
 struct AppTerminationEvent : public IEvent {
 
   /**
-   * @brief Constructor
-   * @param status app termination flag
+   * @brief Constructor.
+   * @param status: app termination flag.
    */
   AppTerminationEvent(bool status);
   const bool isAppTerminating;

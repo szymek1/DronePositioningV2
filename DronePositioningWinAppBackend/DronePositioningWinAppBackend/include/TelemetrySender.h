@@ -13,19 +13,24 @@
 */
 class TelemetrySender : public ITelemetrySender, public ISubscriber {
 public:
+
+    /**
+     * @brief Constructor.
+     * @param isVerbose: logs verbosity flag.
+     */
     explicit TelemetrySender(bool isVerbose=false);
 
 private:
 
     /**
     * @brief Send telemetry via UDP protocol.
-    * @param telemetry new telemetry extracted from the event
+    * @param telemetry: new telemetry extracted from the event.
     */
     void sendPosition_(const std::vector<float> &telemetry) override final;
 
     /**
-     * @brief Send telemetry to external platform
-     * @param event new telemetry data
+     * @brief Send telemetry to external platform.
+     * @param event: new telemetry data.
      */
     void onEvent_(const TelemetryEvent &event) override final;
 

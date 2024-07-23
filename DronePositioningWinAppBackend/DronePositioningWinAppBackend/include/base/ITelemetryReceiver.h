@@ -35,7 +35,7 @@ private:
     virtual void stop_() = 0;
 
 	/**
-	 * @brief Register received telemetry to the EventBus
+	 * @brief Register received telemetry to the EventBus.
 	 */
 	virtual void registerTelemetryEvent_() = 0;
 };

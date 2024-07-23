@@ -31,15 +31,15 @@ class MainController
 public:
 
 	/**
-	* @brief Construct a new Main Controller object
+	* @brief Construct a new Main Controller object.
 	*
-	* @param flightConfigPath - path to the flight configuration file
+	* @param flightConfigPath: path to the flight configuration file.
 	*/
     explicit MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus,
                           bool isVerbose = false);
 
 	/**
-	 * @brief Deconstructor for the Main Controller object
+	 * @brief Deconstructor for the Main Controller object.
 	 */
 	~MainController() = default; // temporary
 

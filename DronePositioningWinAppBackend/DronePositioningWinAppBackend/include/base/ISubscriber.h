@@ -16,16 +16,16 @@ public:
 
   /**
   * @brief Respond to particular event- call appropriate implementation.
-  * @param event type of event
+  * @param event: type of event.
   */
   void onEvent(const Event &event);
 
 private:
 
   /**
-   * @brief Send Event of already determined type to proper overload onEvent_
-   * @tparam T deduced type of Event
-   * @param event object storing event specific data
+   * @brief Send Event of already determined type to proper overload onEvent_ .
+   * @tparam T: deduced type of Event.
+   * @param event: object storing event specific data.
    */
   template <typename T> void dispatchEvent(const T &event) { onEvent_(event); };
 
@@ -41,20 +41,20 @@ private:
    ****************************************************/
 
   /**
-   * @brief Handle new telemtry
-   * @param event new telemetry data
+   * @brief Handle new telemtry.
+   * @param event: new telemetry data.
    */
   virtual void onEvent_(const TelemetryEvent &event){};
 
   /**
-   * @brief Handle new connection event
-   * @param event new connection status
+   * @brief Handle new connection event.
+   * @param event: new connection status.
    */
   virtual void onEvent_(const ConnectionEvent &event){};
 
   /**
-   * @brief Handle app termination call
-   * @param event app termination call
+   * @brief Handle app termination call.
+   * @param event: app termination call.
    */
   virtual void onEvent_(const AppTerminationEvent &event){};
 };

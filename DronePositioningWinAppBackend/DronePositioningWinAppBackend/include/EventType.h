@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @enum EventType
+ * @enum EventType.
  * @brief Enum defining event types tho which observers like:
  * - IProcessor
  * - ITelemetryReceiver

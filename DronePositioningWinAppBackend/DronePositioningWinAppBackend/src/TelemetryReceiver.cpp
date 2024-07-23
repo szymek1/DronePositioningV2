@@ -2,9 +2,10 @@
 
 
 TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
-                                     std::atomic_bool &appStatus, bool isVerbose)
-    : m_isRunning(appStatus), m_verbose(isVerbose) {
+                                     bool isVerbose) 
+    : m_verbose(isVerbose) { 
   m_publisher = bus.getPublisher();
+  m_running.store(false);
   if (m_verbose) {
     std::cout << "TelemetryReceiver: instanitated" << std::endl;
   }
@@ -12,12 +13,13 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
 
 void TelemetryReceiver::receive_() {
 	// Launching Processor thread
+    m_running.store(true);
 	if (m_verbose) {
 		std::cout << "TelemetryReceiver: running receiver thread" << std::endl;
 	}
 
     m_currTelemetry = {50.4, 20.4, 30.99};
-	while (m_isRunning.load()) {
+	while (m_running.load()) { 
 		// Read data
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		// Some condition to say when we have a valid new telemetry
@@ -31,10 +33,10 @@ void TelemetryReceiver::receive_() {
 }
 
 void TelemetryReceiver::stop_() { 
-	m_isRunning.store(false); 
 	if (m_verbose) {
 		std::cout << "TelemetryReceiver: terminating..." << std::endl;
     }
+	m_running.store(false);
 }
 
 void TelemetryReceiver::registerTelemetryEvent_() { 
