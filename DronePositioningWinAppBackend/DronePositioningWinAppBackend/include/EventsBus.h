@@ -5,6 +5,9 @@
 #include <memory>
 #include <mutex>
 
+#include <boost/asio/thread_pool.hpp>
+#include <boost/asio.hpp>
+
 #include "base/IPublisher.h"
 #include "base/ISubscriber.h"
 
@@ -16,7 +19,7 @@ public:
    * @brief Constructor.
    */
   explicit EventsBus() = default;
-  ~EventsBus() = default;
+  ~EventsBus();
 
   /**
    * @brief Add subscriber to unordered map of subscribers.
@@ -89,11 +92,13 @@ private:
 
   SubscriptionsMap m_subscriptionsMap;
   EventsMutexMap m_eventsMtxMap;
+
   std::mutex m_getPublisherMtx;
   std::mutex m_addSubMtx;
   std::mutex m_rmvSubMtx;
 
   std::unique_ptr<EventsBusPublisher> m_publisher;
-  
+
+  boost::asio::thread_pool m_pool{5};
 };
 
