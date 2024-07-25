@@ -96,8 +96,8 @@ enum class CoorindatesSystem {
 };
 
 enum class AltitudeDifference {
-	DEFAUL,			  //  0
-	IGNORE_ALT_DIFF  //   1
+	DEFAULT,			  //  0
+	IGNORE_ALT_DIFF		 //   1
 };
 
 enum class ScoringMethod {
