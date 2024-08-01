@@ -1,10 +1,12 @@
 #include "../include/TelemetrySender.h"
 
 
-TelemetrySender::TelemetrySender(const std::string& ip, const std::string& port,
+TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
+                                 const std::string &port,
                                  bool isVerbose)
     : m_verbose(isVerbose) {
 
+  m_publisher = bus.getPublisher();
   m_winSockVersion = MAKEWORD(2, 2);
 
   // Starting WinSock

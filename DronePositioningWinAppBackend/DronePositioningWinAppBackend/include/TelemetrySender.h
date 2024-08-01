@@ -8,6 +8,7 @@
 
 #include "base/ITelemetrySender.h"
 #include "base/ISubscriber.h"
+#include "EventsBus.h"
 
 // Include the Winsock library (lib) file
 #pragma comment(lib, "ws2_32.lib")
@@ -26,7 +27,7 @@ public:
      * @param port: endpoint port.
      * @param isVerbose: logs verbosity flag.
      */
-  explicit TelemetrySender(const std::string& ip,
+  explicit TelemetrySender(EventsBus &bus, const std::string &ip,
                            const std::string& port, bool isVerbose = false);
 
   ~TelemetrySender();
@@ -53,11 +54,14 @@ private:
     SOCKET m_socket;
     sockaddr_in m_remoteTarget;
 
-    // std::thread m_ioServiceThread;
-
     /****************************************************
     * Logging
     *****************************************************/
     bool m_verbose;
+
+    /****************************************************
+    * Publishing
+    *****************************************************/
+    IPublisher *m_publisher;
 };
 
