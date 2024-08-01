@@ -7,6 +7,7 @@ TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
     : m_verbose(isVerbose) {
 
   m_publisher = bus.getPublisher();
+
   m_winSockVersion = MAKEWORD(2, 2);
 
   // Starting WinSock

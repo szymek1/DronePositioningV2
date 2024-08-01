@@ -41,7 +41,7 @@ public:
 	/**
 	 * @brief Deconstructor for the Main Controller object.
 	 */
-	~MainController() = default; // temporary
+    ~MainController();
 
 	/**
 	* @brief Run the main application. Begin with initialization: reading and parsing flight configuration file.

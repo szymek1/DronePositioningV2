@@ -20,6 +20,13 @@ MainController::MainController(const std::filesystem::path &flightConfigPath, Ev
 	//		 with EventBus
 }
 
+MainController::~MainController() {
+  m_bus.removeSubscriber(EventType::TELEMETRY_UPDATE, m_telemetrySender);
+  m_bus.removeSubscriber(EventType::TELEMETRY_UPDATE, m_telemetryProcessor);
+  m_bus.removeSubscriber(EventType::CONNECTION_UPDATE, m_connectionManager);
+  m_bus.removeSubscriber(EventType::APP_TERMINATION, m_connectionManager);
+}
+
 void MainController::run() {
 	m_isRunning.store(true);
     std::cout << "Running MainController" << std::endl;
