@@ -10,7 +10,7 @@ UDP_PORT = 1337
 
 if __name__ == "__main__":
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  t
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
     sock.bind((UDP_IP, UDP_PORT))
 
     print(f"Telemetry receiver listening on {UDP_IP}:{UDP_PORT}")
