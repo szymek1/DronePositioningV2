@@ -27,7 +27,12 @@ void MainController::run() {
 	m_telemetryProcessor = std::make_shared<TelemetryProcessor>(m_verbose);
     m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
         m_bus, m_verbose); // m_isRunning, 
-    m_telemetrySender = std::make_shared<TelemetrySender>(m_verbose);
+
+    ConnectionConfigurationInfo connectionInfo =
+        m_flightConfig->getConnectionConfigurationInfo();
+    
+    m_telemetrySender = std::make_shared<TelemetrySender>(
+        connectionInfo.remoteIp, std::to_string(connectionInfo.port), m_verbose);
     // TelemetryProcessor was removed from TelemetryReceiver constructor
     // due to appraently errors with types. It might be launched from here or there's a need
     // for a workaround
