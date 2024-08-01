@@ -30,21 +30,23 @@ int main() {
     }
     
     EventsBus eventsBus = EventsBus();
-    MainController mc = MainController(p, eventsBus, verbosity);
+    {
+      MainController mc = MainController(p, eventsBus, verbosity);
 
-    std::jthread runThread([&mc]() { mc.run(); });
-    std::cout << "Application is running, type STOP to terminate: ";
+      std::jthread runThread([&mc]() { mc.run(); });
+      std::cout << "Application is running, type STOP to terminate: ";
 
-    std::string input;
-    while (std::getline(std::cin, input)) {
-      if (input == "STOP") {
-        if (mc.shutdown()) {
-          break;
+      std::string input;
+      while (std::getline(std::cin, input)) {
+        if (input == "STOP") {
+          if (mc.shutdown()) {
+            break;
+          }
+        } else {
+          std::cout << "Type STOP to terminate" << std::endl;
         }
-      } else {
-        std::cout << "Type STOP to terminate" << std::endl;
       }
-    }
+    } // scope of life for MainController
 
     return 0;
 }
