@@ -5,8 +5,8 @@ from remote client. This script aims to test TelemetrySender implmenetation.
 import socket
 
 
-UDP_IP = "0.0.0.0"  
-UDP_PORT = 1337     
+UDP_IP = "172.28.64.72"  
+UDP_PORT = 54000     
 
 if __name__ == "__main__":
 

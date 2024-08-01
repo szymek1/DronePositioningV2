@@ -3,17 +3,37 @@
 
 TelemetrySender::TelemetrySender(const std::string& ip, const std::string& port,
                                  bool isVerbose)
-    : m_verbose(isVerbose), m_ioService(),
-      m_socket(m_ioService,
-              boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 0)) {
+    : m_verbose(isVerbose) {
 
-  boost::asio::ip::udp::resolver resolver(m_ioService);
-  boost::asio::ip::udp::resolver::results_type endpoints = resolver.resolve(ip, port);
-  m_remoteEndpoint = *endpoints.begin();
+  m_winSockVersion = MAKEWORD(2, 2);
+
+  // Starting WinSock
+  // TODO: make TelemetrySender publish on ConnectionUpdate failure info
+  int wsOk = WSAStartup(m_winSockVersion, &m_winSockdata);
+  if (wsOk != 0) {
+    std::cout << "Couldnt start WinSock: " << wsOk << std::endl;
+    return;
+  }
+
+  const char *m_ip = ip.c_str();                    // Workaround as there's no conversion from
+                                                    // std::string to PCSTR
+
+  // Connecting to the remote target
+  m_remoteTarget.sin_family = AF_INET;              // IPv4 address
+  m_remoteTarget.sin_port = htons(std::stoi(port)); // Little to big endian conversion
+  inet_pton(AF_INET, m_ip, &m_remoteTarget.sin_addr);
+
+  // Socket creation
+  m_socket = socket(AF_INET, SOCK_DGRAM, 0);
 
   if (m_verbose) {
     std::cout << "TelemetrySender: instantiated" << std::endl;
   }
+}
+
+TelemetrySender::~TelemetrySender() {
+  closesocket(m_socket);
+  WSACleanup();
 }
 
 void TelemetrySender::onEvent_(const TelemetryEvent &event) {
@@ -26,20 +46,13 @@ void TelemetrySender::sendPosition_(const std::vector<float> &telemetry) {
   for (const float &value : telemetry) {
     message += std::to_string(value) + " ";
   }
+  
+  int sendOK = sendto(m_socket, message.c_str(), message.size() + 1, 0,
+                      (sockaddr *)&m_remoteTarget, sizeof(m_remoteTarget));
 
-  // Async execution
-  m_socket.async_send_to(boost::asio::buffer(message), m_remoteEndpoint,
-                        [this](const boost::system::error_code &error,
-                               std::size_t bytes_transferred) {
-                          if (m_verbose) {
-                            if (!error) {
-                              std::cout
-                                  << "Telemetry sent: " << bytes_transferred
-                                  << " bytes" << std::endl;
-                            } else {
-                              std::cout << "Error sending telemetry: "
-                                        << error.message() << std::endl;
-                            }
-                          }
-                        });
+  // TODO: send to the bus error message
+  if (sendOK == SOCKET_ERROR) {
+    std::cout << "Couldnt send package: " << WSAGetLastError() << std::endl;
+  }
+
 }

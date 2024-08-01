@@ -4,10 +4,13 @@
 #include <vector>
 #include <string>
 
-#include <boost/asio.hpp>
+#include <WS2tcpip.h>
 
 #include "base/ITelemetrySender.h"
 #include "base/ISubscriber.h"
+
+// Include the Winsock library (lib) file
+#pragma comment(lib, "ws2_32.lib")
 
 
 /**
@@ -26,6 +29,8 @@ public:
   explicit TelemetrySender(const std::string& ip,
                            const std::string& port, bool isVerbose = false);
 
+  ~TelemetrySender();
+
 private:
 
     /**
@@ -43,9 +48,12 @@ private:
     /****************************************************
     * Networking
     *****************************************************/
-    boost::asio::ip::udp::socket m_socket;
-    boost::asio::io_service m_ioService;
-    boost::asio::ip::udp::endpoint m_remoteEndpoint;
+    WSADATA m_winSockdata;
+    WORD m_winSockVersion;
+    SOCKET m_socket;
+    sockaddr_in m_remoteTarget;
+
+    // std::thread m_ioServiceThread;
 
     /****************************************************
     * Logging
