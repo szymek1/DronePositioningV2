@@ -23,8 +23,8 @@ public:
      * @param port: endpoint port.
      * @param isVerbose: logs verbosity flag.
      */
-  explicit TelemetrySender(std::string ip,
-                           std::string port, bool isVerbose = false);
+  explicit TelemetrySender(const std::string& ip,
+                           const std::string& port, bool isVerbose = false);
 
 private:
 
