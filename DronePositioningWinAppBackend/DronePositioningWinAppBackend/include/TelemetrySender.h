@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+
+#include <boost/asio.hpp>
 
 #include "base/ITelemetrySender.h"
 #include "base/ISubscriber.h"
@@ -16,9 +19,12 @@ public:
 
     /**
      * @brief Constructor.
+     * @param ip: endpoint ip address.
+     * @param port: endpoint port.
      * @param isVerbose: logs verbosity flag.
      */
-    explicit TelemetrySender(bool isVerbose=false);
+  explicit TelemetrySender(std::string ip,
+                           std::string port, bool isVerbose = false);
 
 private:
 
@@ -33,6 +39,13 @@ private:
      * @param event: new telemetry data.
      */
     void onEvent_(const TelemetryEvent &event) override final;
+
+    /****************************************************
+    * Networking
+    *****************************************************/
+    boost::asio::ip::udp::socket m_socket;
+    boost::asio::io_service m_ioService;
+    boost::asio::ip::udp::endpoint m_remoteEndpoint;
 
     /****************************************************
     * Logging
