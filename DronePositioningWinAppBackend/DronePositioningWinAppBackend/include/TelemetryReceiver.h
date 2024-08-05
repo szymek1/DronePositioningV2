@@ -22,7 +22,7 @@ public:
 	 * @param bus: EventsBus reference in order to access publisher
 	 * @param isVerbose: logs verbosity flag.
 	 */
-	explicit TelemetryReceiver(EventsBus &bus, bool isVerbose=false); 
+	explicit TelemetryReceiver(EventsBus &bus, const std::string& portCom, bool isVerbose=false); 
 	~TelemetryReceiver() = default;
 
 
@@ -42,6 +42,11 @@ private:
     * @brief Register received telemetry to the EventBus.
     */
 	void registerTelemetryEvent_() override final;
+
+    /****************************************************
+    * UAV connection specification
+    ****************************************************/
+    const std::string m_portCom;
 
     /****************************************************
     * Logging

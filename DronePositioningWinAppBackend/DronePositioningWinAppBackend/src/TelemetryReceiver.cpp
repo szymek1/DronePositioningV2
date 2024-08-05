@@ -1,9 +1,9 @@
 #include "../include/TelemetryReceiver.h"
 
 
-TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
+TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
                                      bool isVerbose) 
-    : m_verbose(isVerbose) { 
+    : m_portCom(portCom), m_verbose(isVerbose) { 
   m_publisher = bus.getPublisher();
   m_running.store(false);
   if (m_verbose) {

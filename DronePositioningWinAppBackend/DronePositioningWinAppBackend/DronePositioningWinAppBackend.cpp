@@ -36,7 +36,7 @@ int main() {
     
     EventsBus eventsBus = EventsBus();
     {
-      MainController mc = MainController(p, eventsBus, verbosity);
+      MainController mc = MainController(p, eventsBus, raw_port, verbosity);
 
       std::jthread runThread([&mc]() { mc.run(); });
       std::cout << "Application is running, type STOP to terminate: ";

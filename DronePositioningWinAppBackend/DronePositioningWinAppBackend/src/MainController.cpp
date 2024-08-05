@@ -34,7 +34,7 @@ void MainController::run() {
 
 	m_telemetryProcessor = std::make_shared<TelemetryProcessor>(m_verbose);
     m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
-        m_bus, m_verbose); // m_isRunning, 
+        m_bus, m_portCom, m_verbose); // m_isRunning, 
 
     ConnectionConfigurationInfo connectionInfo =
         m_flightConfig->getConnectionConfigurationInfo();
