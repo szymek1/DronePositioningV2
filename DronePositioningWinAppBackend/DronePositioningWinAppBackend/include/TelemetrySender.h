@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+#include <WinSock2.h>
 #include <WS2tcpip.h>
 
 #include "base/ITelemetrySender.h"
@@ -53,6 +54,8 @@ private:
     WORD m_winSockVersion;
     SOCKET m_socket;
     sockaddr_in m_remoteTarget;
+    const char *m_ip;
+    const int m_port;
 
     /****************************************************
     * Logging

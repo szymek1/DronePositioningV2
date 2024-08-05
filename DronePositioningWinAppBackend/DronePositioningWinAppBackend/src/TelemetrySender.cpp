@@ -4,7 +4,7 @@
 TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
                                  const std::string &port,
                                  bool isVerbose)
-    : m_verbose(isVerbose) {
+    : m_verbose(isVerbose), m_ip(ip.c_str()), m_port(std::stoi(port)) {
 
   m_publisher = bus.getPublisher();
 
@@ -18,16 +18,16 @@ TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
     return;
   }
 
-  const char *m_ip = ip.c_str();                    // Workaround as there's no conversion from
-                                                    // std::string to PCSTR
-
   // Connecting to the remote target
   m_remoteTarget.sin_family = AF_INET;              // IPv4 address
-  m_remoteTarget.sin_port = htons(std::stoi(port)); // Little to big endian conversion
   inet_pton(AF_INET, m_ip, &m_remoteTarget.sin_addr);
-
+  m_remoteTarget.sin_port = htons(m_port); 
+  
   // Socket creation
-  m_socket = socket(AF_INET, SOCK_DGRAM, 0);
+  if ((m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
+    std::cout << "Failed to create socket: " << WSAGetLastError() << std::endl;
+    return;
+  }
 
   if (m_verbose) {
     std::cout << "TelemetrySender: instantiated" << std::endl;
