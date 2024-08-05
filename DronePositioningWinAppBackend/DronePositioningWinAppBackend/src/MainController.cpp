@@ -1,7 +1,8 @@
 #include "../include/MainController.h"
 
-MainController::MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus,
-                               bool isVerbose) : m_bus(bus), m_verbose(isVerbose) {
+MainController::MainController(const std::filesystem::path &flightConfigPath,
+                               EventsBus &bus, const std::string &portCom,
+                               bool isVerbose) : m_bus(bus), m_verbose(isVerbose), m_portCom(portCom) {
 	if (initialize_(flightConfigPath)) {
 		std::cout << "Configuration loaded" << std::endl;
         m_publisher = m_bus.getPublisher();

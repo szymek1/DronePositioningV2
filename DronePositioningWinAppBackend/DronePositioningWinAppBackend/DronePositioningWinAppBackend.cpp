@@ -7,10 +7,15 @@
 int main() {
     std::string raw_input; // C:\Users\bogus\Documents\myProjects\UAV_PW\Cyprian\GCSServer\GCSServer\Cw3c_10.txt
     std::string raw_verbosity;
+    std::string raw_port;
 
     std::cout << "Please specify the path for the flight configuration file: ";
     std::getline(std::cin, raw_input);
     std::filesystem::path p(raw_input);
+    std::cout << "\n";
+
+    std::cout << "Please specify the port for UAV (example: COM4): ";
+    std::getline(std::cin, raw_port);
 
     std::cout << "\n";
     bool isVerbositySetCorrect = false;

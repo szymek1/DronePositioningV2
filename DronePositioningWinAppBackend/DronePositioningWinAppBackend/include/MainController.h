@@ -35,7 +35,7 @@ public:
 	*
 	* @param flightConfigPath: path to the flight configuration file.
 	*/
-    explicit MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus,
+    explicit MainController(const std::filesystem::path &flightConfigPath, EventsBus& bus, const std::string& portCom,
                           bool isVerbose = false);
 
 	/**
@@ -70,6 +70,7 @@ private:
     std::shared_ptr<ITelemetryReceiver> m_telemetryReceiver;
     std::shared_ptr<ISubscriber> m_telemetryProcessor; 
     std::shared_ptr<ISubscriber> m_telemetrySender;
+    const std::string m_portCom;
 
 
 	/****************************************************
