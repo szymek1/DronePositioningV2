@@ -26,7 +26,12 @@ void ConnectionManager::disconnect() {
     m_telemetryReceiver->stop();
 }
 
-void ConnectionManager::onEvent_(const ConnectionEvent &event) {}
+void ConnectionManager::onEvent_(const ConnectionEvent &event) {
+  std::cout << "CONNECTION STAUTS:\n"
+            << "From: " << event.whichComponent << "\n"
+            << "Is connected: " << event.isConnected << "\n"
+            << "Message: " << event.connMess << std::endl;
+}
 
 void ConnectionManager::onEvent_(const AppTerminationEvent &event) {
   if (event.isAppTerminating) {

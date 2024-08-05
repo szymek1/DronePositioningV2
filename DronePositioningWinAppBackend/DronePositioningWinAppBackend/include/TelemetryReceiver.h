@@ -6,6 +6,8 @@
 #include <atomic>
 #include <iostream>
 
+#include <Windows.h>
+
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"
 
@@ -47,6 +49,8 @@ private:
     * UAV connection specification
     ****************************************************/
     const std::string m_portCom;
+    HANDLE m_comSerial;
+    DCB m_dcbSerialParams;
 
     /****************************************************
     * Logging

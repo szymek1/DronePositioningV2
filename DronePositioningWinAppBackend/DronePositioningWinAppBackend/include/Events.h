@@ -29,10 +29,13 @@ struct ConnectionEvent : public IEvent {
    * @brief Constructor.
    * @param status: current connection status from a component.
    * @param who: component name.
+   * @param message: connection status message.
    */
-  ConnectionEvent(bool status, const std::string& who);
-  const std::string whichComponent;
+  ConnectionEvent(bool status, const std::string& who, const std::string& message);
   const bool isConnected;
+  const std::string whichComponent;
+  const std::string connMess;
+  
 };
 
 /**

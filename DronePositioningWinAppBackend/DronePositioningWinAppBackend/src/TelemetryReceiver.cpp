@@ -4,8 +4,61 @@
 TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
                                      bool isVerbose) 
     : m_portCom(portCom), m_verbose(isVerbose) { 
+
   m_publisher = bus.getPublisher();
   m_running.store(false);
+
+  // Initializing serial port connection
+  m_comSerial = HANDLE(INVALID_HANDLE_VALUE);
+  m_dcbSerialParams = {0};
+
+  std::wstring wideComPort(m_portCom.begin(), m_portCom.end());
+  LPCWSTR comPortName = wideComPort.c_str();
+
+  m_comSerial = CreateFile(
+	  comPortName,
+	  GENERIC_READ | GENERIC_WRITE,
+	  0,
+	  0,
+	  OPEN_EXISTING,
+	  0,
+	  NULL
+  );
+
+  if (m_comSerial == INVALID_HANDLE_VALUE) {
+    ConnectionEvent connEvent(false, "TelemetryReceiver",
+                              "Error opening serial port");
+    m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+  }
+
+  SecureZeroMemory(&m_dcbSerialParams, sizeof(m_dcbSerialParams));
+  m_dcbSerialParams.DCBlength = sizeof(m_dcbSerialParams);
+
+  if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
+    ConnectionEvent connEvent(false, "TelemetryReceiver",
+                              "Error getting com state: " + GetLastError());
+  }
+
+  //  Fill in some DCB values and set the com state:
+  //  57,600 bps, 8 data bits, no parity, and 1 stop bit.
+  m_dcbSerialParams.BaudRate = CBR_57600;  //  baud rate
+  m_dcbSerialParams.ByteSize = 8;          //  data size, xmit and rcv
+  m_dcbSerialParams.Parity = NOPARITY;     //  parity bit
+  m_dcbSerialParams.StopBits = ONESTOPBIT; //  stop bit
+
+  if (!SetCommState(m_comSerial, &m_dcbSerialParams)) {
+    ConnectionEvent connEvent(false, "TelemetryReceiver",
+                              "Error setting serial port state: "+GetLastError());
+    m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+  }
+
+  if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
+    ConnectionEvent connEvent(false, "TelemetryReceiver",
+                              "Error getting serial port state: " +
+                                  GetLastError());
+    m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+  }
+
   if (m_verbose) {
     std::cout << "TelemetryReceiver: instanitated" << std::endl;
   }
