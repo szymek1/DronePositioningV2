@@ -69,7 +69,13 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   }
 
   if (m_verbose) {
-    std::cout << "TelemetryReceiver: instanitated" << std::endl;
+    // Weird mutex error occurs when EventsBus is used here
+    /*
+    ConnectionEvent connEvent(true, "TelemetryReceiver",
+                              "Instantiated");
+    m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+    */
+    std::cout << "TelemetryReceiver: Instanitated" << std::endl;
   }
 }
 
@@ -77,17 +83,84 @@ void TelemetryReceiver::receive_() {
 	// Launching Processor thread
     m_running.store(true);
 	if (m_verbose) {
-		std::cout << "TelemetryReceiver: running receiver thread" << std::endl;
+      ConnectionEvent connEvent(true, "TelemetryReceiver",
+                                "Running receiver thread");
+      m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
 	}
 
-    // m_currTelemetry = {50.4, 20.4, 30.99};
+    // Mavlink data structures
     mavlink_message_t message;
     mavlink_status_t status;
-    
+    mavlink_command_ack_t command_ack;
+
+    uint8_t intervalRequestData[MAVLINK_MAX_PACKET_LEN];
+
+    // Lambda function for setting up mavlink data interval
+    auto requestDataStream = [&](uint16_t messageId, uint32_t intervalUs) {
+      mavlink_msg_command_long_pack(255, 0, &message, 1, 1,
+                                    MAV_CMD_SET_MESSAGE_INTERVAL, 0, messageId,
+                                    intervalUs, 0, 0, 0, 0, NULL);
+      
+      int requestMessageLenght =
+          mavlink_msg_to_send_buffer(intervalRequestData, &message);
+
+      DWORD bytesWritten;
+      if (!WriteFile(m_comSerial, intervalRequestData, requestMessageLenght,
+                     &bytesWritten, NULL)) {
+        ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                  "Couldnt request data interval: " +
+                                      GetLastError());
+        AppTerminationEvent terminationEvent(true);
+        m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+        m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+      }
+
+      // Wait for acknowledgement
+      while (true) {
+        DWORD dwBytesReadAcknowledgeRqst = 0;
+        uint8_t acknowledgeData;
+
+        if (ReadFile(m_comSerial, &acknowledgeData, 1,
+                     &dwBytesReadAcknowledgeRqst, NULL) &&
+            dwBytesReadAcknowledgeRqst == 1) {
+          if (mavlink_parse_char(MAVLINK_COMM_1, acknowledgeData, &message,
+                                 &status) == 1) {
+            if (message.msgid == MAVLINK_MSG_ID_COMMAND_ACK) {
+              mavlink_msg_command_ack_decode(&message, &command_ack);
+              if (command_ack.command == MAV_CMD_SET_MESSAGE_INTERVAL &&
+                  command_ack.result == MAV_RESULT_ACCEPTED) {
+
+                ConnectionEvent connEvent(
+                    true, "TelemetryReceiver",
+                    "Received mavlink request ack from UAV");
+                m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+
+                break;
+              } else {
+
+                ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                          "Didnt receive mavlink request ack from UAV");
+                AppTerminationEvent terminationEvent(true);
+                m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+                m_publisher->publish(EventType::APP_TERMINATION,
+                                     terminationEvent);
+
+                break;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    // Request attitude, GPS, and heartbeat data interval frequency
+    requestDataStream(MAVLINK_MSG_ID_ATTITUDE,            100000);  // 10 Hz
+    requestDataStream(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 500000);  // 2 Hz
+    requestDataStream(MAVLINK_MSG_ID_HEARTBEAT,           1000000); // 1 Hz
+
+    // Main loop for receiving telemetry
 	while (m_running.load()) { 
 		// Read data
-        // std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		// Some condition to say when we have a valid new telemetry
         DWORD dwBytesRead = 0;
         uint8_t raw_data;
 
@@ -106,13 +179,16 @@ void TelemetryReceiver::receive_() {
                   registerTelemetryEvent_();
                 } break;
                 default: {
-                  std::cout << "NO TELEMETRY" << std::endl;
+                  ConnectionEvent connEvent(
+                      true, "TelemetryReceiver",
+                      "No telemetry data from UAV");
+                  m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
                 }
             }
           }
         }
 	}
-
+    
 	// This section launches after stop_() shuts down the loop.
 	// It's responsible for:
 	// cleaning resources, calling Processor to generate the report, shutting down Processor thread
@@ -121,9 +197,16 @@ void TelemetryReceiver::receive_() {
 
 void TelemetryReceiver::stop_() { 
 	if (m_verbose) {
-		std::cout << "TelemetryReceiver: terminating..." << std::endl;
+        // Error I cant crack to solve
+        /*
+        ConnectionEvent connEvent(true, "TelemetryReceiver",
+                                  "terminating");
+        m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+        */
+          std::cout << "TelemetryReceiver: Terminating" << std::endl;
     }
 	m_running.store(false);
+    CloseHandle(m_comSerial);
 }
 
 void TelemetryReceiver::registerTelemetryEvent_() { 
