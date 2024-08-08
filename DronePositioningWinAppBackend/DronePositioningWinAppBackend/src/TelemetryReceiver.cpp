@@ -149,6 +149,10 @@ void TelemetryReceiver::receive_() {
               }
             }
           }
+        } else {
+          ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                    "Serial connection error");
+          m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
         }
       }
     }; // End of lambda function
@@ -165,10 +169,23 @@ void TelemetryReceiver::receive_() {
     * Main loop for receiving telemetry
     ****************************************************/
 	while (m_running.load()) { 
-		// Read data
         DWORD dwBytesRead = 0;
         uint8_t raw_data;
 
+        // Telemetry data
+        // Angular
+        float roll{0.0};
+        float pitch{0.0};
+        float yaw{0.0};
+
+        // GPS
+        /*
+        float lat{0.0};
+        float log{0.0};
+        float alt{0.0};
+        */
+        
+        // Read data
         if (ReadFile(m_comSerial, &raw_data, 1, &dwBytesRead, NULL) &&
             dwBytesRead == 1) {
           if (mavlink_parse_char(MAVLINK_COMM_1, raw_data, &message, &status) ==
@@ -177,43 +194,61 @@ void TelemetryReceiver::receive_() {
                 case MAVLINK_MSG_ID_ATTITUDE: {
                   mavlink_attitude_t attitude;
                   mavlink_msg_attitude_decode(&message, &attitude);
-                  float roll  = attitude.roll;
-                  float pitch = attitude.pitch;
-                  float yaw   = attitude.yaw;
-                  m_currTelemetry = {roll, pitch, yaw};
-                  registerTelemetryEvent_();
+                  roll  = attitude.roll;
+                  pitch = attitude.pitch;
+                  yaw   = attitude.yaw;
+                  //m_currTelemetry = {roll, pitch, yaw};
+                  //registerTelemetryEvent_();
                 } break;
+                
+                /*
+                case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: {
+                  mavlink_global_position_int_t gps;
+                  mavlink_msg_global_position_int_decode(&message, &gps);
 
+                  // Access GPS data:
+                  int32_t lat = gps.lat; // Latitude in degrees * 1E7
+                  int32_t lon = gps.lon; // Longitude in degrees * 1E7
+                  int32_t alt = gps.alt; // Altitude in millimeters (above MSL)
+
+                } break;
+                */
+                
                 case MAVLINK_MSG_ID_HEARTBEAT: {
                   mavlink_heartbeat_t heartbeat;
                   mavlink_msg_heartbeat_decode(&message, &heartbeat);
                   switch (heartbeat.system_status) {
                       case MAV_STATE_ACTIVE: {
-                        ConnectionEvent connEvent(true, "TelemetryReceiver",
-                                                  "Mavlink ON");
-                        m_publisher->publish(EventType::CONNECTION_UPDATE,
-                                             connEvent);
+                        if (m_verbose) {
+                          ConnectionEvent connEvent(true, "TelemetryReceiver",
+                                                    "Mavlink ON");
+                          m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                               connEvent);
+                        }
                       } break;
 
                       case MAV_STATE_EMERGENCY: {
                         ConnectionEvent connEvent(false, "TelemetryReceiver",
-                                                  "Mavlink EMERGENCY");
+                                                  "Mavlink Heartbeat EMERGENCY");
                         m_publisher->publish(EventType::CONNECTION_UPDATE,
                                              connEvent);
                       } break;
 
                       case MAV_STATE_CRITICAL: {
                         ConnectionEvent connEvent(false, "TelemetryReceiver",
-                                                  "Mavlink CRITICAL");
+                                                  "Mavlink Heartbeat CRITICAL");
                         m_publisher->publish(EventType::CONNECTION_UPDATE,
                                              connEvent);
                       } break;
                        
                       default: {
-                        ConnectionEvent connEvent(false, "TelemetryReceiver",
-                                                  "Mavlink UNDEFINED");
-                        m_publisher->publish(EventType::CONNECTION_UPDATE,
-                                             connEvent);
+                        if (m_verbose) {
+                          ConnectionEvent connEvent(
+                              true, "TelemetryReceiver",
+                              "Mavlink Heartbeat UNDEFINED");
+                          m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                               connEvent);
+                        }
                       }
                   }
                 } break;
@@ -225,6 +260,10 @@ void TelemetryReceiver::receive_() {
                   m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
                 }
             }
+
+            // After collecting mavlink telemetry aggregate them into vector
+            m_currTelemetry = {roll, pitch, yaw};
+            registerTelemetryEvent_();
           } 
 
         } else {
