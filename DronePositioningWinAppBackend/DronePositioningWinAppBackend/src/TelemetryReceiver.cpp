@@ -151,14 +151,19 @@ void TelemetryReceiver::receive_() {
           }
         }
       }
-    };
+    }; // End of lambda function
 
-    // Request attitude, GPS, and heartbeat data interval frequency
+    /****************************************************
+    * Request attitude, GPS, and heartbeat
+    * data interval frequency
+    ****************************************************/
     requestDataStream(MAVLINK_MSG_ID_ATTITUDE,            100000);  // 10 Hz
     requestDataStream(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 500000);  // 2 Hz
     requestDataStream(MAVLINK_MSG_ID_HEARTBEAT,           1000000); // 1 Hz
 
-    // Main loop for receiving telemetry
+    /****************************************************
+    * Main loop for receiving telemetry
+    ****************************************************/
 	while (m_running.load()) { 
 		// Read data
         DWORD dwBytesRead = 0;
@@ -178,6 +183,41 @@ void TelemetryReceiver::receive_() {
                   m_currTelemetry = {roll, pitch, yaw};
                   registerTelemetryEvent_();
                 } break;
+
+                case MAVLINK_MSG_ID_HEARTBEAT: {
+                  mavlink_heartbeat_t heartbeat;
+                  mavlink_msg_heartbeat_decode(&message, &heartbeat);
+                  switch (heartbeat.system_status) {
+                      case MAV_STATE_ACTIVE: {
+                        ConnectionEvent connEvent(true, "TelemetryReceiver",
+                                                  "Mavlink ON");
+                        m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                             connEvent);
+                      } break;
+
+                      case MAV_STATE_EMERGENCY: {
+                        ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                                  "Mavlink EMERGENCY");
+                        m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                             connEvent);
+                      } break;
+
+                      case MAV_STATE_CRITICAL: {
+                        ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                                  "Mavlink CRITICAL");
+                        m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                             connEvent);
+                      } break;
+                       
+                      default: {
+                        ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                                  "Mavlink UNDEFINED");
+                        m_publisher->publish(EventType::CONNECTION_UPDATE,
+                                             connEvent);
+                      }
+                  }
+                } break;
+
                 default: {
                   ConnectionEvent connEvent(
                       true, "TelemetryReceiver",
@@ -185,7 +225,12 @@ void TelemetryReceiver::receive_() {
                   m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
                 }
             }
-          }
+          } 
+
+        } else {
+          ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                    "Serial connection error");
+          m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
         }
 	}
     
