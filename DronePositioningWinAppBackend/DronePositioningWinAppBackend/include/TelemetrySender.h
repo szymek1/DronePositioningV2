@@ -4,15 +4,11 @@
 #include <vector>
 #include <string>
 
-#include <WinSock2.h>
 #include <WS2tcpip.h>
 
 #include "base/ITelemetrySender.h"
 #include "base/ISubscriber.h"
 #include "EventsBus.h"
-
-// Include the Winsock library (lib) file
-#pragma comment(lib, "ws2_32.lib")
 
 
 /**

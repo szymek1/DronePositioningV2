@@ -4,6 +4,8 @@
 #include <memory>
 #include <atomic>
 #include <iostream>
+#include <mutex>
+#include <condition_variable>
 
 #include "base/ISubscriber.h"
 #include "base/ITelemetryReceiver.h"
@@ -34,13 +36,21 @@ public:
 
   /**
   * @brief Connect all services: TelemetryReceiver and TelemetrySender.
+  * @param terminationMtx: mutex for handling premature termination of TelemetryReceiver.
+  * @param terminationCV: condition variable notyfing of TelemetryReceiver premature termination.
   */
-  void connect();
+  void connect(); // std::mutex& terminationMtx, std::condition_variable& terminationCV
 
   /**
   * @brief Disconnect all services: TelemetryReceiver and TelemetrySender.
   */
   void disconnect();
+
+  /**
+  * @brief Inform whether ConnectionManager is shuttingdown.
+  * @return True, if shutdown.
+  */
+ // bool isTerminated() const;
 
 private:
 
@@ -66,6 +76,7 @@ private:
   * Threading
   *****************************************************/
   std::jthread m_receiverThread;
+  // std::atomic_bool m_isAlreadyTerminated;
 
   /****************************************************
   * Logging

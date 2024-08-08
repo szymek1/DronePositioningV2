@@ -1,3 +1,6 @@
+// Include the Winsock library (lib) file
+#pragma comment(lib, "ws2_32.lib")
+
 #include <thread>
 
 #include "include/MainController.h"

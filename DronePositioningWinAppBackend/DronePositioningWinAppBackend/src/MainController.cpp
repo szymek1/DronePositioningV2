@@ -64,19 +64,45 @@ void MainController::run() {
     m_bus.addSubscriber(EventType::APP_TERMINATION, m_connectionManager);
 
     // TODO: launch threads etc...
+    /*
+    std::mutex terminationMtx;
+    std::condition_variable terminationCV;
+    bool isPrematureTerminated {false};
+    */
+    
+
     auto connMgr =
         std::dynamic_pointer_cast<ConnectionManager>(m_connectionManager);
     
     if (connMgr) {
       m_connectionManagerThread =
-          std::jthread(&ConnectionManager::connect, connMgr);
+          std::jthread(&ConnectionManager::connect, connMgr); // ,std::ref(terminationMtx), std::ref(terminationCV)
+      
+           
       while (m_isRunning.load()) {
-        // Main loop
+        /*
+        std::unique_lock<std::mutex> lock(terminationMtx);
+        terminationCV.wait(
+            lock, [connMgr] {
+              return connMgr->isTerminated(); // deadlock somewhere here
+            });
+        if (connMgr->isTerminated()) {
+          m_isRunning.store(false);
+          isPrematureTerminated = true;
+          break;
+        }
+        */
+        
       }
 
       // connMgr->disconnect();
-      AppTerminationEvent terminationEvent{true};
-      m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+      // if (!isPrematureTerminated) {
+        // AppTerminationEvent is necessary in this section
+        // only if ConnectionManager hasnt been shutdown yet
+        AppTerminationEvent terminationEvent{true};
+        m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+      // }
+      
     } else {
         throw std::runtime_error("Couldnt create telemetry utilities. Aborting...");
     }

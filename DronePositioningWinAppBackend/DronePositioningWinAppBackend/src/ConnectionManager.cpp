@@ -8,15 +8,29 @@ ConnectionManager::ConnectionManager(
     : m_telemetryReceiver(receiver), m_telemetrySender(sender), 
       m_verbose(isVerbose) {
 
+    // m_isAlreadyTerminated.store(false); // No negative connection status has shutdown application yet
+
     if (m_verbose) {
         std::cout << "ConnectionManager: instanitated" << std::endl;
     }
 
 }
 
-void ConnectionManager::connect() {
+void ConnectionManager::connect() { // std::mutex &terminationMtx, std::condition_variable &terminationCV
+  
   m_receiverThread =
       std::jthread(&ITelemetryReceiver::receive, m_telemetryReceiver);
+  /*
+  std::unique_lock<std::mutex> lock(terminationMtx);
+  terminationCV.wait(lock, [this] {
+    return m_isAlreadyTerminated.load() || !m_receiverThread.joinable();
+  });
+
+  if (m_isAlreadyTerminated.load()) {
+    terminationCV.notify_one();
+  }
+  */
+  
 }
 
 void ConnectionManager::disconnect() { 
@@ -24,7 +38,14 @@ void ConnectionManager::disconnect() {
         std::cout << "ConnectionManager: stopping TelemetryReceiver" << std::endl;
     }
     m_telemetryReceiver->stop();
+    // m_isAlreadyTerminated.store(true);
 }
+
+/*
+bool ConnectionManager::isTerminated() const {
+  return m_isAlreadyTerminated.load() || !m_receiverThread.joinable();
+}
+*/
 
 void ConnectionManager::onEvent_(const ConnectionEvent &event) {
   std::cout << "CONNECTION STAUTS:\n"

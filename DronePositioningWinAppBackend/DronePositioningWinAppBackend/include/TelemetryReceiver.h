@@ -4,9 +4,10 @@
 #include <thread>
 #include <memory>
 #include <atomic>
+#include <math.h>
 #include <iostream>
 
-#include <Windows.h>
+#include <common/mavlink.h>
 
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"
