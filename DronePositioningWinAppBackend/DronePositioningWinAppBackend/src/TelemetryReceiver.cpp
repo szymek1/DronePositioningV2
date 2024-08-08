@@ -91,12 +91,12 @@ void TelemetryReceiver::receive_() {
     // Mavlink data structures
     mavlink_message_t message;
     mavlink_status_t status;
-    mavlink_command_ack_t command_ack;
-
-    uint8_t intervalRequestData[MAVLINK_MAX_PACKET_LEN];
-
+    
     // Lambda function for setting up mavlink data interval
     auto requestDataStream = [&](uint16_t messageId, uint32_t intervalUs) {
+      mavlink_command_ack_t command_ack;
+      uint8_t intervalRequestData[MAVLINK_MAX_PACKET_LEN];
+
       mavlink_msg_command_long_pack(255, 0, &message, 1, 1,
                                     MAV_CMD_SET_MESSAGE_INTERVAL, 0, messageId,
                                     intervalUs, 0, 0, 0, 0, NULL);
