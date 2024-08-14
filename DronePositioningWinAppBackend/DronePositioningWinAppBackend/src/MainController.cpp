@@ -4,22 +4,26 @@ MainController::MainController(const std::filesystem::path &flightConfigPath,
                                EventsBus &bus, const std::string &portCom,
                                bool isVerbose) : m_bus(bus), m_verbose(isVerbose), m_portCom(portCom) {
 	if (initialize_(flightConfigPath)) {
-		std::cout << "Configuration loaded" << std::endl;
+		std::cout << "Configuration loaded\n";
         m_publisher = m_bus.getPublisher();
 
 		m_isRunning.store(false);
-        shouldTerminate.store(false);
+        {
+          std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
+          m_isPrematureTerminate = false;
+        }
 
         if (isVerbose) {
             m_flightConfig->displayLoadedConfiguration();
         }
     } else {
-        std::cout << "Couldnt load the configuration" << std::endl;
+        std::cout << "Couldnt load the configuration\n";
 	}
 }
 
 MainController::~MainController() {
-  if (!shouldTerminate.load()) {
+  std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
+  if (!m_isPrematureTerminate) {
     m_bus.removeSubscriber(EventType::TELEMETRY_UPDATE,  m_telemetrySender);
     m_bus.removeSubscriber(EventType::TELEMETRY_UPDATE,  m_telemetryProcessor);
     m_bus.removeSubscriber(EventType::CONNECTION_UPDATE, m_connectionManager);
@@ -29,16 +33,20 @@ MainController::~MainController() {
 
 void MainController::run() {
 	m_isRunning.store(true);
-    std::cout << "Running MainController" << std::endl;
+    std::cout << "Running MainController\n";
 
     // try-catch block associated with errors due to serial connection errors
-    bool isSerialError{false};
+    bool isSerialError{false}; // If true, then nothing else has to be instanitated and this 
+                               // method can begin to finish
     try { 
         m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
             m_bus, m_portCom, m_verbose);
     } catch (const std::runtime_error &telemetryRcvrErr) {
         isSerialError = true;
-        shouldTerminate.store(true);
+        {
+          std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
+          m_isPrematureTerminate = false;
+        }
         std::cout << telemetryRcvrErr.what() << std::endl;
     }
 
@@ -86,18 +94,25 @@ void MainController::run() {
       }
     }
 	
-    std::cout << "Shutting down..." << std::endl;
+    std::cout << "Shutting down...\n";
+    if (isSerialError) {
+      // Just to be clear, even though this is a shutdown it is not intended
+      // to end up like this, thus excpetion is being thorwn
+      throw std::runtime_error("Premature termination");
+    }
 }
 
-bool MainController::shutdown() { 
-    if (!shouldTerminate.load()) {
+bool MainController::shutdown() {
+    { 
+      std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
+      if (!m_isPrematureTerminate) {
         m_isRunning.store(false);
 
         // Announce shutdown
         AppTerminationEvent terminationEvent(true);
         m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+      }
     }
-	
 	return true; 
 }
 

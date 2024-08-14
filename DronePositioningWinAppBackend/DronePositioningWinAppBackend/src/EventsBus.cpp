@@ -14,7 +14,6 @@ void EventsBus::addSubscriber(const EventType eventType,
   }
 
   m_subscriptionsMap[eventType].push_back(subscriber);
-  std::cout << "New subscription to: " << (int)eventType << " added\n";
 }
 
 void EventsBus::removeSubscriber(

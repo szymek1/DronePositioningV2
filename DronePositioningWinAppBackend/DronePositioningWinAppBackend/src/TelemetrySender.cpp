@@ -11,10 +11,9 @@ TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
   m_winSockVersion = MAKEWORD(2, 2);
 
   // Starting WinSock
-  // TODO: make TelemetrySender publish on ConnectionUpdate failure info
   int wsOk = WSAStartup(m_winSockVersion, &m_winSockdata);
   if (wsOk != 0) {
-    std::cout << "Couldnt start WinSock: " << wsOk << std::endl;
+    std::cout << "Couldnt start WinSock: " << wsOk << "\n";
     return;
   }
 
@@ -25,12 +24,13 @@ TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
   
   // Socket creation
   if ((m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
-    std::cout << "Failed to create socket: " << WSAGetLastError() << std::endl;
+    std::cout << "Failed to create socket: " << WSAGetLastError() << "\n";
     return;
   }
 
   if (m_verbose) {
-    std::cout << "TelemetrySender: instantiated" << std::endl;
+    std::cout << "TelemetrySender: instantiated"
+              << "\n";
   }
 }
 
@@ -55,7 +55,7 @@ void TelemetrySender::sendPosition_(const std::vector<float> &telemetry) {
 
   // TODO: send to the bus error message
   if (sendOK == SOCKET_ERROR) {
-    std::cout << "Couldnt send package: " << WSAGetLastError() << std::endl;
+    std::cout << "Couldnt send package: " << WSAGetLastError() << "\n";
   }
 
 }

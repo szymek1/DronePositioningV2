@@ -5,8 +5,6 @@
 #include <memory>
 #include <mutex>
 
-#include <iostream>
-
 #include <boost/asio/thread_pool.hpp>
 #include <boost/asio.hpp>
 

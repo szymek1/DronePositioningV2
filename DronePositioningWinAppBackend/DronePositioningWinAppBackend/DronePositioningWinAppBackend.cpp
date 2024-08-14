@@ -2,9 +2,31 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <cstdio>
 
 #include "include/MainController.h"
 #include "include/EventsBus.h"
+
+
+std::mutex g_terminationMtx;
+std::condition_variable g_terminationCV;
+bool g_shouldStop = false;
+
+void userInputThread() {
+  std::string input;
+  while (std::getline(std::cin, input)) {
+    if (input == "STOP") {
+      {
+        std::lock_guard<std::mutex> lk(g_terminationMtx);
+        g_shouldStop = true;
+      }
+      g_terminationCV.notify_one();
+      break;
+    }
+  }
+}
 
 
 int main() {
@@ -40,8 +62,6 @@ int main() {
     EventsBus eventsBus = EventsBus();
     {
       MainController mc = MainController(p, eventsBus, raw_port, verbosity);
-
-      // std::jthread runThread([&mc]() { mc.run(); });
       
       std::jthread runThread([&mc]() {
         try {
@@ -49,11 +69,30 @@ int main() {
         } catch (const std::runtime_error &e) {
           std::cerr << "Critical error in MainController::run(): " << e.what()
                     << std::endl;
+          {
+            std::lock_guard<std::mutex> lk(g_terminationMtx);
+            g_shouldStop = true;
+          }
+          g_terminationCV.notify_one();
+          std::fclose(stdin); // used to shutdown inputThread, otherwise it causes deadlock
         }
       });
-      
-      std::cout << "Application is running, type STOP to terminate: ";
+      std::jthread inputThread(userInputThread);
 
+      std::cout << "Application is running, type STOP to terminate: ";
+      {
+        std::unique_lock<std::mutex> lk(g_terminationMtx);
+        g_terminationCV.wait(lk, [] { return g_shouldStop; });
+      }
+      
+      if (mc.shutdown()) {
+        std::cout << "Application finished without issues\n";
+      }
+
+      runThread.join();
+      inputThread.join();
+      
+      /*
       std::string input;
       while (std::getline(std::cin, input)) {
         if (input == "STOP" || mc.shouldTerminate.load()) {
@@ -64,6 +103,8 @@ int main() {
           std::cout << "Type STOP to terminate" << std::endl;
         }
       }
+      */
+      
 
     } // scope of life for MainController
 

@@ -4,6 +4,7 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <mutex>
 #include <iostream>
 
 #include "base/IPublisher.h"
@@ -55,7 +56,7 @@ public:
 	 */
 	bool shutdown();
 
-	std::atomic_bool shouldTerminate;
+	// std::atomic_bool shouldTerminate;
 
 private:
 
@@ -87,6 +88,11 @@ private:
 	*****************************************************/
 	std::jthread m_connectionManagerThread;
 	std::atomic_bool m_isRunning; // Flag to indicate if the application is running
+    std::mutex m_isPrematureTerminateMtx;
+    bool m_isPrematureTerminate; // Flag which indicates that program will terminate prematurely.
+								 // It is used to avoid MainController access EventsBus methods when
+								 // no subscription has been done up to this point (used when serial connection errors occur).
+								 // Such situation of trying to remove subscriber of nonexisting type from the map could result in deadlock.
 
 	/****************************************************
 	* Logging

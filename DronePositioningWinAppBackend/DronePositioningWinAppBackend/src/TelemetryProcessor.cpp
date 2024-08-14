@@ -2,13 +2,13 @@
 
 TelemetryProcessor::TelemetryProcessor(bool isVerbose) : m_verbose(isVerbose) {
   if (m_verbose) {
-    std::cout << "TelemetryProcessor: instantiated" << std::endl;
+    std::cout << "TelemetryProcessor: instantiated\n";
   }
 }
 
 void TelemetryProcessor::process_(const std::vector<float> &telemetry) {
   if (m_verbose) {
-    std::cout << "TelemetryProcessor received: " << std::endl;
+    std::cout << "TelemetryProcessor received: \n";
     for (const auto &t : telemetry) {
       std::cout << t << " ";
     }

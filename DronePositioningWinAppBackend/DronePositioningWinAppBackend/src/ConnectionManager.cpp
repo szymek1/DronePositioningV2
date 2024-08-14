@@ -8,56 +8,37 @@ ConnectionManager::ConnectionManager(
     : m_telemetryReceiver(receiver), m_telemetrySender(sender), 
       m_verbose(isVerbose) {
 
-    // m_isAlreadyTerminated.store(false); // No negative connection status has shutdown application yet
-
     if (m_verbose) {
-        std::cout << "ConnectionManager: instanitated" << std::endl;
+        std::cout << "ConnectionManager: instanitated\n";
     }
 
 }
 
-void ConnectionManager::connect() { // std::mutex &terminationMtx, std::condition_variable &terminationCV
+void ConnectionManager::connect() {
   
   m_receiverThread =
-      std::jthread(&ITelemetryReceiver::receive, m_telemetryReceiver);
-  /*
-  std::unique_lock<std::mutex> lock(terminationMtx);
-  terminationCV.wait(lock, [this] {
-    return m_isAlreadyTerminated.load() || !m_receiverThread.joinable();
-  });
-
-  if (m_isAlreadyTerminated.load()) {
-    terminationCV.notify_one();
-  }
-  */
-  
+      std::jthread(&ITelemetryReceiver::receive, m_telemetryReceiver);  
 }
 
 void ConnectionManager::disconnect() { 
     if (m_verbose) {
-        std::cout << "ConnectionManager: stopping TelemetryReceiver" << std::endl;
+        std::cout << "ConnectionManager: stopping TelemetryReceiver\n";
     }
     m_telemetryReceiver->stop();
-    // m_isAlreadyTerminated.store(true);
 }
-
-/*
-bool ConnectionManager::isTerminated() const {
-  return m_isAlreadyTerminated.load() || !m_receiverThread.joinable();
-}
-*/
 
 void ConnectionManager::onEvent_(const ConnectionEvent &event) {
   std::cout << "CONNECTION STAUTS:\n"
             << "From: " << event.whichComponent << "\n"
             << "Is connected: " << event.isConnected << "\n"
-            << "Message: " << event.connMess << std::endl;
+            << "Message: " << event.connMess << "\n";
 }
 
 void ConnectionManager::onEvent_(const AppTerminationEvent &event) {
   if (event.isAppTerminating) {
     if (m_verbose) {
-      std::cout << "ConnectionManager: terminating" << std::endl;
+      std::cout << "ConnectionManager: terminating"
+                << "\n";
     }
     disconnect();
   }
