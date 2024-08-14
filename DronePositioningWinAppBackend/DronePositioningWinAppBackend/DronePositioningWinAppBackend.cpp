@@ -41,12 +41,22 @@ int main() {
     {
       MainController mc = MainController(p, eventsBus, raw_port, verbosity);
 
-      std::jthread runThread([&mc]() { mc.run(); });
+      // std::jthread runThread([&mc]() { mc.run(); });
+      
+      std::jthread runThread([&mc]() {
+        try {
+          mc.run();
+        } catch (const std::runtime_error &e) {
+          std::cerr << "Critical error in MainController::run(): " << e.what()
+                    << std::endl;
+        }
+      });
+      
       std::cout << "Application is running, type STOP to terminate: ";
 
       std::string input;
       while (std::getline(std::cin, input)) {
-        if (input == "STOP") {
+        if (input == "STOP" || mc.shouldTerminate.load()) {
           if (mc.shutdown()) {
             break;
           }
@@ -54,18 +64,8 @@ int main() {
           std::cout << "Type STOP to terminate" << std::endl;
         }
       }
+
     } // scope of life for MainController
 
     return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

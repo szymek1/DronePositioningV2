@@ -18,22 +18,28 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
     if (isCOM) {
       break;
     } else {
+      // Can't solve mutex issue here
+      /*
       ConnectionEvent connEvent(false, "TelemetryReceiver",
                                 "Waiting for connection...");
       m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
-      std::this_thread::sleep_for(std::chrono::milliseconds(5000)); // wait 5 seconds before checking again
+      */
+      std::this_thread::sleep_for(std::chrono::milliseconds(500)); // wait 5 seconds before checking again
       retryCnt--;
     }
   } // wait overall 25 seconds for connection
   
   if (!isCOM) {
+    // Can't solve mutex issue here
+    /*
     ConnectionEvent connEvent(false, "TelemetryReceiver",
                               "Receiving device is not connected or port COM has been incorrectly specified");
     AppTerminationEvent terminationEvent(true);
-    m_publisher->publish(EventType::CONNECTION_UPDATE,
-                         connEvent); // Incorrect shutdown of entire application
+    m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent); // Incorrect shutdown of entire application
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-    return;
+    */
+    throw std::runtime_error("Receiving device is not connected or port COM "
+                             "has been incorrectly specified");
   }
 
   // Establishing connection
@@ -54,23 +60,29 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   );
 
   if (m_comSerial == INVALID_HANDLE_VALUE) {
+    // Can't solve mutex issue here
+    /*
     ConnectionEvent connEvent(false, "TelemetryReceiver",
                               "Error opening serial port");
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent); // Incorrect shutdown of entire application
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-    return;
+    */
+    throw std::runtime_error("Error opening serial port");
   }
 
   SecureZeroMemory(&m_dcbSerialParams, sizeof(m_dcbSerialParams));
   m_dcbSerialParams.DCBlength = sizeof(m_dcbSerialParams);
 
   if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
+    // Can't solve mutex issue here
+    /*
     ConnectionEvent connEvent(false, "TelemetryReceiver",
                               "Error getting com state: " + GetLastError());
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-    return;
+    */
+    throw std::runtime_error("Error getting com state");
   }
 
   //  Fill in some DCB values and set the com state:
@@ -81,32 +93,38 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   m_dcbSerialParams.StopBits = ONESTOPBIT; //  stop bit
 
   if (!SetCommState(m_comSerial, &m_dcbSerialParams)) {
+    // Can't solve mutex issue here
+    /*
     ConnectionEvent connEvent(false, "TelemetryReceiver",
                               "Error setting serial port state: "+GetLastError());
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-    return;
+    */
+    throw std::runtime_error("Error setting serial port state");
   }
 
   if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
+    // Can't solve mutex issue here
+    /*
     ConnectionEvent connEvent(false, "TelemetryReceiver",
                               "Error getting serial port state: " +
                                   GetLastError());
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-    return;
+    */
+    throw std::runtime_error("Error getting serial port state");
   }
 
   if (m_verbose) {
-    // Weird mutex error occurs when EventsBus is used here
+    // Can't solve mutex issue here
     /*
     ConnectionEvent connEvent(true, "TelemetryReceiver",
-                              "Instantiated");
+                               "Instantiated");
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
     */
-    std::cout << "TelemetryReceiver: Instanitated" << std::endl;
+    std::cout << "TelemetryReceiver: instanitated\n";
   }
 }
 
@@ -183,7 +201,9 @@ void TelemetryReceiver::receive_() {
         } else {
           ConnectionEvent connEvent(false, "TelemetryReceiver",
                                     "Serial connection error");
+          AppTerminationEvent terminationEvent(true);
           m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+          m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
         }
       }
     }; // End of lambda function
@@ -303,22 +323,17 @@ void TelemetryReceiver::receive_() {
           m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
         }
 	}
-    
-	// This section launches after stop_() shuts down the loop.
-	// It's responsible for:
-	// cleaning resources, calling Processor to generate the report, shutting down Processor thread
-	
 }
 
 void TelemetryReceiver::stop_() { 
 	if (m_verbose) {
-        // Error I cant crack to solve
+        // Can't solve mutex issue here
         /*
         ConnectionEvent connEvent(true, "TelemetryReceiver",
                                   "terminating");
         m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
         */
-          std::cout << "TelemetryReceiver: Terminating" << std::endl;
+        std::cout << "TelemetryReceiver: terminating\n";
     }
 	m_running.store(false);
     CloseHandle(m_comSerial);

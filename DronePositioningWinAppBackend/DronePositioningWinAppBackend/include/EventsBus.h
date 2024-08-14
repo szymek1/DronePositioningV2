@@ -5,6 +5,8 @@
 #include <memory>
 #include <mutex>
 
+#include <iostream>
+
 #include <boost/asio/thread_pool.hpp>
 #include <boost/asio.hpp>
 
@@ -96,6 +98,7 @@ private:
   std::mutex m_getPublisherMtx;
   std::mutex m_addSubMtx;
   std::mutex m_rmvSubMtx;
+  std::mutex m_subscriptionsMutex;
 
   std::unique_ptr<EventsBusPublisher> m_publisher;
 
