@@ -99,8 +99,8 @@ void MainController::run() {
       // if (!isPrematureTerminated) {
         // AppTerminationEvent is necessary in this section
         // only if ConnectionManager hasnt been shutdown yet
-        AppTerminationEvent terminationEvent{true};
-        m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+        // AppTerminationEvent terminationEvent{true};
+        // m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
       // }
       
     } else {
