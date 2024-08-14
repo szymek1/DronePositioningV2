@@ -9,6 +9,34 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   m_running.store(false);
 
   // Initializing serial port connection
+  // Validating, if port COM works
+  int retryCnt = 5;
+  DWORD isCOM = 0;
+  CHAR lpTargetPath[5000];
+  while (retryCnt > 0) {
+    isCOM = QueryDosDeviceA(m_portCom.c_str(), lpTargetPath, 5000);
+    if (isCOM) {
+      break;
+    } else {
+      ConnectionEvent connEvent(false, "TelemetryReceiver",
+                                "Waiting for connection...");
+      m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+      std::this_thread::sleep_for(std::chrono::milliseconds(5000)); // wait 5 seconds before checking again
+      retryCnt--;
+    }
+  } // wait overall 25 seconds for connection
+  
+  if (!isCOM) {
+    ConnectionEvent connEvent(false, "TelemetryReceiver",
+                              "Receiving device is not connected or port COM has been incorrectly specified");
+    AppTerminationEvent terminationEvent(true);
+    m_publisher->publish(EventType::CONNECTION_UPDATE,
+                         connEvent); // Incorrect shutdown of entire application
+    m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+    return;
+  }
+
+  // Establishing connection
   m_comSerial = HANDLE(INVALID_HANDLE_VALUE);
   m_dcbSerialParams = {0};
 
@@ -31,7 +59,7 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent); // Incorrect shutdown of entire application
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
-
+    return;
   }
 
   SecureZeroMemory(&m_dcbSerialParams, sizeof(m_dcbSerialParams));
@@ -42,6 +70,7 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
                               "Error getting com state: " + GetLastError());
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+    return;
   }
 
   //  Fill in some DCB values and set the com state:
@@ -57,6 +86,7 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+    return;
   }
 
   if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
@@ -66,6 +96,7 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
     AppTerminationEvent terminationEvent(true);
     m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
     m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
+    return;
   }
 
   if (m_verbose) {
