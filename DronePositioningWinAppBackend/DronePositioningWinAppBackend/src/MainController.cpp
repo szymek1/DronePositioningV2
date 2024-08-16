@@ -1,5 +1,6 @@
 #include "../include/MainController.h"
 
+
 MainController::MainController(const std::filesystem::path &flightConfigPath,
                                EventsBus &bus, const std::string &portCom,
                                bool isVerbose) : m_bus(bus), m_verbose(isVerbose), m_portCom(portCom) {
@@ -29,6 +30,7 @@ MainController::~MainController() {
     m_bus.removeSubscriber(EventType::CONNECTION_UPDATE, m_connectionManager);
     m_bus.removeSubscriber(EventType::APP_TERMINATION,   m_connectionManager);
   }
+  m_publisher = nullptr;
 }
 
 void MainController::run() {
@@ -45,7 +47,7 @@ void MainController::run() {
         isSerialError = true;
         {
           std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
-          m_isPrematureTerminate = false;
+          m_isPrematureTerminate = true;
         }
         std::cout << telemetryRcvrErr.what() << std::endl;
     }

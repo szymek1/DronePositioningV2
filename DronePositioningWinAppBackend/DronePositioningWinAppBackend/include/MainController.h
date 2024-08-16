@@ -56,8 +56,6 @@ public:
 	 */
 	bool shutdown();
 
-	// std::atomic_bool shouldTerminate;
-
 private:
 
 	/**

@@ -62,7 +62,7 @@ int main() {
     EventsBus eventsBus = EventsBus();
     {
       MainController mc = MainController(p, eventsBus, raw_port, verbosity);
-      
+      std::jthread inputThread(userInputThread);
       std::jthread runThread([&mc]() {
         try {
           mc.run();
@@ -77,7 +77,7 @@ int main() {
           std::fclose(stdin); // used to shutdown inputThread, otherwise it causes deadlock
         }
       });
-      std::jthread inputThread(userInputThread);
+     
 
       std::cout << "Application is running, type STOP to terminate: ";
       {
@@ -88,23 +88,6 @@ int main() {
       if (mc.shutdown()) {
         std::cout << "Application finished without issues\n";
       }
-
-      runThread.join();
-      inputThread.join();
-      
-      /*
-      std::string input;
-      while (std::getline(std::cin, input)) {
-        if (input == "STOP" || mc.shouldTerminate.load()) {
-          if (mc.shutdown()) {
-            break;
-          }
-        } else {
-          std::cout << "Type STOP to terminate" << std::endl;
-        }
-      }
-      */
-      
 
     } // scope of life for MainController
 
