@@ -37,6 +37,7 @@ TelemetrySender::TelemetrySender(EventsBus &bus, const std::string &ip,
 TelemetrySender::~TelemetrySender() {
   closesocket(m_socket);
   WSACleanup();
+  m_publisher = nullptr;
 }
 
 void TelemetrySender::onEvent_(const TelemetryEvent &event) {

@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include <common/mavlink.h>
+// #include <cubepilot/mavlink.h>
 
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"
@@ -27,7 +28,7 @@ public:
 	 * @param isVerbose: logs verbosity flag.
 	 */
 	explicit TelemetryReceiver(EventsBus &bus, const std::string& portCom, bool isVerbose=false); 
-	~TelemetryReceiver() = default;
+	~TelemetryReceiver();
 
 
 private:

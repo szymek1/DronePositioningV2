@@ -78,6 +78,8 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   }
 }
 
+TelemetryReceiver::~TelemetryReceiver() { m_publisher = nullptr; }
+
 void TelemetryReceiver::receive_() {
 	// Launching Processor thread
     m_running.store(true);
@@ -161,11 +163,16 @@ void TelemetryReceiver::receive_() {
     /****************************************************
     * Request attitude, GPS, and heartbeat
     * data interval frequency
+    * IMPORTANT: frequency for both attitude and GPS 
+    * must be the same, otherwise if attitude has it
+    * higher than GPS, then GPS is not being received.
+    * Asio boost serial connection reader would be nice.
+    * Read asynchornously both values- TODO.
     ****************************************************/
-    requestDataStream(MAVLINK_MSG_ID_ATTITUDE,            100000);  // 10 Hz
-    requestDataStream(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 500000);  // 2 Hz
+    requestDataStream(MAVLINK_MSG_ID_ATTITUDE,            10000);   // 10 Hz
+    requestDataStream(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 10000);   // 10 Hz 
     requestDataStream(MAVLINK_MSG_ID_HEARTBEAT,           1000000); // 1 Hz
-
+    
     /****************************************************
     * Main loop for receiving telemetry
     ****************************************************/
@@ -178,13 +185,11 @@ void TelemetryReceiver::receive_() {
         float roll{0.0};
         float pitch{0.0};
         float yaw{0.0};
-
+        
         // GPS
-        /*
         float lat{0.0};
-        float log{0.0};
+        float lon{0.0};
         float alt{0.0};
-        */
         
         // Read data
         if (ReadFile(m_comSerial, &raw_data, 1, &dwBytesRead, NULL) &&
@@ -198,22 +203,16 @@ void TelemetryReceiver::receive_() {
                   roll  = attitude.roll;
                   pitch = attitude.pitch;
                   yaw   = attitude.yaw;
-                  //m_currTelemetry = {roll, pitch, yaw};
-                  //registerTelemetryEvent_();
                 } break;
                 
-                /*
                 case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: {
                   mavlink_global_position_int_t gps;
+                  
                   mavlink_msg_global_position_int_decode(&message, &gps);
-
-                  // Access GPS data:
-                  int32_t lat = gps.lat; // Latitude in degrees * 1E7
-                  int32_t lon = gps.lon; // Longitude in degrees * 1E7
-                  int32_t alt = gps.alt; // Altitude in millimeters (above MSL)
-
+                  lat = gps.lat / 1E7f; // Latitude in degrees * 1E7
+                  lon = gps.lon / 1E7f; // Longitude in degrees * 1E7
+                  alt = gps.alt / 1E7f; // Altitude in millimeters (above MSL)
                 } break;
-                */
                 
                 case MAVLINK_MSG_ID_HEARTBEAT: {
                   mavlink_heartbeat_t heartbeat;
@@ -263,7 +262,7 @@ void TelemetryReceiver::receive_() {
             }
 
             // After collecting mavlink telemetry aggregate them into vector
-            m_currTelemetry = {roll, pitch, yaw};
+            m_currTelemetry = {roll, pitch, yaw, lat, lon, alt};
             registerTelemetryEvent_();
           } 
 
