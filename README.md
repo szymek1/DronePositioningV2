@@ -13,6 +13,16 @@ The scheme above is the general depiction of the system, which consists of three
 ### Proxy
 ![Windows_app_scheme](docs/WindowsDesktopAppBackend.png)
 
+The schema above represents the architecture of the proxy, which consists of the following objects:
+
+- ```MainController```: class which controls the main loop of the program. It is responsible for initializing the program to work: load configuration file -> instantiate receiver, sender and processor, managers -> make subscription for respective objects to ```EventsBus``` -> start receiver thread -> terminate the main loop
+- ```ConfigurationManager```: utility class which parses configuration file and instantiate ```FlightConfig``` objects with data necessary
+- ```ConnectionManager```: class handling connection between UAV and the program. Starts and joins receiver thread. Process connection events
+- ```EventsBus```: object responsible for managing events flow in the application. Allows objects implementing ```ISubscriber``` interface to receive events of a specific topic as well as shares an internal publisher for objects to actually publish data
+- ```TelemetryReceiver```: receiver that utilizes mavlink protocol for communication with the drone
+- ```TelemetrySender```: server sending telemtry data packages via UDP to a remote endpoint
+- ```TelemetryProcessor```: class implementing validation metricies for scoring the training session. Generates report after session terminates
+
 ### Microsoft HoloLens2
 ![HL2_scheme](docs/MicrosoftHL2.png)
 
