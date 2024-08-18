@@ -59,7 +59,7 @@ Every interface from the project utilizes [Template Method](http://www.gotw.ca/p
 #### EventsBus
 ```EventsBus``` uses a map of subscribers with keys being attributes of enum class ```EventType``` and each field being a vector of weak pointers to ```ISubcriber``` objects. A priority for this section of the project was to make sure that process of handling new events by multiple subscribers happens smoothly. That is why ```EventsBus``` uses ```boost::asio::thread_pool``` with a number of worker threads to handle notifications all at once. No additional threads synchornization is required for this part given ```Event``` objects remain ```const```.
 
-![uav](docs/Eventsbus.png)
+![uav](docs/EventsBus.png)
 
 ### Telemetry Utilities
 TODO
