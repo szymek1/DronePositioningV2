@@ -64,6 +64,10 @@ private:
 	 */
 	bool initialize_(const std::filesystem::path& flightConfigPath);
 
+	bool m_isConfigGood{false}; // flag for signaling that config file indeed
+                               // exists and could be loaded
+						 // by ConfigurationManager
+
 	/****************************************************
 	* Telemetry Utilities
 	****************************************************/

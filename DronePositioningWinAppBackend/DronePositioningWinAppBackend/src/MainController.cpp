@@ -6,6 +6,7 @@ MainController::MainController(const std::filesystem::path &flightConfigPath,
                                bool isVerbose) : m_bus(bus), m_verbose(isVerbose), m_portCom(portCom) {
 	if (initialize_(flightConfigPath)) {
 		std::cout << "Configuration loaded\n";
+        m_isConfigGood = true;
         m_publisher = m_bus.getPublisher();
 
 		m_isRunning.store(false);
@@ -34,22 +35,24 @@ MainController::~MainController() {
 }
 
 void MainController::run() {
-	m_isRunning.store(true);
+  if (m_isConfigGood) {
+    m_isRunning.store(true);
     std::cout << "Running MainController\n";
 
     // try-catch block associated with errors due to serial connection errors
-    bool isSerialError{false}; // If true, then nothing else has to be instanitated and this 
-                               // method can begin to finish
-    try { 
-        m_telemetryReceiver = std::make_shared<TelemetryReceiver>(
-            m_bus, m_portCom, m_verbose);
+    bool isSerialError{
+        false}; // If true, then nothing else has to be instanitated and this
+                // method can begin to finish
+    try {
+      m_telemetryReceiver =
+          std::make_shared<TelemetryReceiver>(m_bus, m_portCom, m_verbose);
     } catch (const std::runtime_error &telemetryRcvrErr) {
-        isSerialError = true;
-        {
-          std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
-          m_isPrematureTerminate = true;
-        }
-        std::cout << telemetryRcvrErr.what() << std::endl;
+      isSerialError = true;
+      {
+        std::lock_guard<std::mutex> lk(m_isPrematureTerminateMtx);
+        m_isPrematureTerminate = true;
+      }
+      std::cout << telemetryRcvrErr.what() << std::endl;
     }
 
     if (!isSerialError) {
@@ -75,10 +78,10 @@ void MainController::run() {
       m_connectionManager = std::make_shared<ConnectionManager>(
           m_telemetryReceiverConn, m_telemetrySenderConn, m_verbose);
 
-      m_bus.addSubscriber(EventType::TELEMETRY_UPDATE,  m_telemetrySender);
-      m_bus.addSubscriber(EventType::TELEMETRY_UPDATE,  m_telemetryProcessor);
+      m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetrySender);
+      m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetryProcessor);
       m_bus.addSubscriber(EventType::CONNECTION_UPDATE, m_connectionManager);
-      m_bus.addSubscriber(EventType::APP_TERMINATION,   m_connectionManager);
+      m_bus.addSubscriber(EventType::APP_TERMINATION, m_connectionManager);
 
       auto connMgr =
           std::dynamic_pointer_cast<ConnectionManager>(m_connectionManager);
@@ -95,13 +98,16 @@ void MainController::run() {
             "Couldnt create telemetry utilities. Aborting...");
       }
     }
-	
+
     std::cout << "Shutting down...\n";
     if (isSerialError) {
       // Just to be clear, even though this is a shutdown it is not intended
       // to end up like this, thus excpetion is being thorwn
       throw std::runtime_error("Premature termination");
     }
+  } else {
+    throw std::runtime_error("Premature termination");
+  }
 }
 
 bool MainController::shutdown() {

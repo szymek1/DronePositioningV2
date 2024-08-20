@@ -61,6 +61,21 @@ Every interface from the project utilizes [Template Method](http://www.gotw.ca/p
 
 ![uav](docs/EventsBus.png)
 
+Any future object which whishes to receive events must subscribe to at least one of the given topics:
+- ```EventType::TELEMETRY_UPDATE```: receive telemetry
+- ```EventType::CONNECTION_UPDATE```: receive information regarding connection from either ```ITelemetryReceiver``` or ```ITelemetrySender```
+- ```EventType::APP_TERMINATION```: receive signal that application wants to shut down
+
+Subscription process is managed by ```EventsBus``` which subscribes with:
+ ```c++
+    EventsBus::addSubscriber(EventType::TYPE,  std::shared_ptr<ISubscriber>);
+```
+
+and unsubscribes with:
+ ```c++
+    EventsBus::removeSubscriber(EventType::TYPE,  std::shared_ptr<ISubscriber>);
+```
+
 ### Telemetry Utilities
 Telemetry utilities is a group of components which handle telemetry in various ways. This group consists of:
 
@@ -93,20 +108,79 @@ In the current version of the project a concrete implementation uses UDP protoco
 TODO
 
 ### Doxygen documentation
-TODO
+Documentation was writtne using Doxygen format. In order to generate roubust documentation, follow these steps:
+
+1. Make sure you have Doxygen installed, I'm using doxygen 1.11.0 as the latest one didn't want to work as intended.
+2. Enter Doxywizard and proceed with typical steps to generate HTML docs.
+3. You can use latex to generate pdf after Doxywizard finshes
 
 ### ISSUES
-Explain how std::getline may stop from proper shutdown in emergency and how that results in deadlock.
+Unfortunately, the current version struggles with occasional deadlocks caused when:
+- a rapid disconnection of receiving medium occurs
+- given serial port doesn't exist or receiver medium isn't connected within 25 seconds
+
+In any of cases ```ITelemetryReceiver``` should signal ```EventType::APP_TERMINATION``` and this messange shoudl trigger ```ConnectionManager::disconnect```. This workflow seems to happen, although ```runThread``` doesn't join and same goes for ```inputThread```. My assumption is that somehow ```inputThread``` causes deadlock and both threads suffer from that. This deduction seems correct as typing "STOP" in the terminal finally allows both threads to join and program shuts down.
+***IN CASE OF DEADLOCK:*** type "STOP".
 
 ## How to build and run
 ### Prequisities
-Version of compiler, version of visual studio, mention windows only, mention ardupilot and mission planner and that it installs necessary drivers to use radio anthena etc...
+There are several prequisites necessary for the project to be build:
+
+- C++ version: 20
+- OS: Windows
+- Compiler: MSVC (I was working with MSVC1940)
+- Build system: Microsoft Visual Studio 2022 Community MSBuild
+- [vcpkg](https://vcpkg.io/en/) for installing [Boost library](https://www.boost.org/)
+- MissionPlanner for diagnosing eventuall bugs with UAV communication
 
 ### Dependencies
 Keep in mind unless you fix automatic submodules update, the command for updating them must be called before anything else. Make sure boost is installed correclty. 
 
+This project uses the following dependencies:
+
+- [fmt](https://github.com/fmtlib/fmt): logging in some areas of the code
+- [mavlink](https://github.com/mavlink/c_library_v2): communication with UAV
+- [Boost.Asio](https://www.boost.org/doc/libs/1_86_0/doc/html/boost_asio.html) v.1.85: thread pool
+
 ### Build
-Cover both debug and release.
+For the fresh-first build follow steps from 1 to 4. For another build use step 5.
+
+1. Clone this repository:
+
+    ```git clone https://github.com/szymek1/DronePositioningV2.git```
+
+2. Update submodules:
+
+    ```git submodule update```
+
+3. Make sure that you have ```vcpkg``` installed by opening the project in MS Visual Studio, then select: ***Project->Properties->Configuration Properties***, once you are there in the left column you should see ```vcpkg```. Click there and make sure that ***Use Vcpkg Manifest:NO***. If you don't see ```vcpkg``` it means it is not installed. You can either install it with MS Visual Studio Installer or from [Microsoft repository](https://github.com/microsoft/vcpkg). For you convenience add path to ```vcpkg/``` to the ```PATH```.
+4. As ```vcpkg``` is ready, execute from terminal (this may take a while):
+
+    ```vcpkg install boost-asio:x64-windows```
+
+5. Open the solution in MS Visual Studio and select either Debug or Release. Then right click on the project name in the ***Solution Explorer*** on the right and select ***Build***.
 
 ### Run
-TODO
+After successful compilation:
+
+- For Debug mode: click on the green arrow or do Ctrl+F5
+- For Release mode: you can do the same as for Debug mode or naviagte to 
+
+    ```\UAV_PW\DronePositioningV2\DronePositioningWinAppBackend\x64\Release```
+
+    and look for ```exe``` file.
+
+### Usage instruction
+1. Specify the path to the configuration file.
+2. Select serial port to which receiver device is connected (you can check it either from MissionPlanner by running CONNECT with auto-detect or using Device Manager). Program will shutdown prematurely if (see [ISSUES](README.md#issues)):
+    - given serial port doesn't exist
+    - after 25 seconds of not detecting a device in the port (it is advised to hurry up in such case as it takes few seconds for antena to begin to work)
+3. Select, if you want verbose logs (yes) or no (no).
+4. After the first 3 steps the program will begin to run. You can stop it in any moment by typing STOP int the terminal and pressing enter. Pressing STOP finishes training and will (feature to add) generate a report.
+
+## TODO
+- fix deadlocks from [ISSUES](README.md#issues) 
+- add another ```ITelemetryReceiver``` using TCP/IP (our custom fligh controller uses ESP8266) server to receive telemetry via network
+- add ```IProcessor``` with PDF reports generator: validation algorithms + find plotting library + find pdf generation library
+- write simple front-end, prefferably with UWP to get rid of the terminal
+- migrate with serial connection and networking solely to Boost
