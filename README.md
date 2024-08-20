@@ -62,4 +62,51 @@ Every interface from the project utilizes [Template Method](http://www.gotw.ca/p
 ![uav](docs/EventsBus.png)
 
 ### Telemetry Utilities
+Telemetry utilities is a group of components which handle telemetry in various ways. This group consists of:
+
+- ```ITelemetryReceiver```
+- ```ITelemetrySender```
+- ```ITelemetryProcessor```
+
+These interfaces have to be implemented and concrete implementations can only be used within the code, although each interface exposes public method which from the user perspective handles entire job.
+
+A failure to instantiate a single telemetry utility ends up with a premature application shutdown.
+
+#### Receiver
+```TelemetryReceiver``` a concrete implementation of ```ITelemetryReceiver``` utilizes mavlink headers-only library to communicate with UAV. It also uses ```windows.h``` to establish a serial connection with communication medium, like radio anthena. The creation of this object can result in ```std::runtime_error``` being thrown and captured within ```MainController::run```, when:
+
+- incorrect serial port was specified for the connection
+- correct port does not register a device within 25 seconds
+
+In any case that exception terminates entire program. 
+
+***IMPORTANT:*** currently a rapid disconnection of receiver device will result in deadlock of an application as I couldn't fix mutex errors there!- more on the potential cause of this issue in section [ISSUES](README.md#issues).
+
+If ```TelemetryReceiver``` is correctly created its method ```ITelemetryReceiver::receive``` is launched from ```ConnectionManager::connect```. At first that method specifies via mavlink what types of messanges the program expects UAV to send and with what frequency. After that receiving process begins. ```TelemetryReceiver``` will reguraly publish new telemetry that will be consumed by ```ITelemetrySender``` and ```ITelemetryProcessor``` via ```EventsBus```.
+
+***IMPORTANT:*** currently, when rapid connection issue happens like: UAV doesn't acknowledge receiving data request command, the program may fall into deadlock due to an attempt to exist prematurely!- more on the potential cause of this issue in section [ISSUES](README.md#issues).
+
+#### Sender
+In the current version of the project a concrete implementation uses UDP protocol for a fast data transfer without a handshake. ```TelemetrySender``` class implements ```ISubscriber``` for telemtry flow and ```ITelemetrySender``` for obvious reasons. Netowrk communcation is being handled by ```winsock.h```. Moreover, this class is instantiated with the reference to ```EventsBus``` in order to publish ```ConnectionEvent``` when necessary.
+
+#### Processor
+TODO
+
+### Doxygen documentation
+TODO
+
+### ISSUES
+Explain how std::getline may stop from proper shutdown in emergency and how that results in deadlock.
+
+## How to build and run
+### Prequisities
+Version of compiler, version of visual studio, mention windows only, mention ardupilot and mission planner and that it installs necessary drivers to use radio anthena etc...
+
+### Dependencies
+Keep in mind unless you fix automatic submodules update, the command for updating them must be called before anything else. Make sure boost is installed correclty. 
+
+### Build
+Cover both debug and release.
+
+### Run
 TODO
