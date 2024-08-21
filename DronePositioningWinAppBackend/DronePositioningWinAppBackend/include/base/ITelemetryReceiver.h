@@ -1,3 +1,19 @@
+/**
+ * @file ITelemetryReceiver.h
+ * @brief Interface for telemetry receiver.
+ *
+ * @details This file contains the declaration of telemtry receiver interface.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include "IProcessor.h"

@@ -1,3 +1,19 @@
+/**
+ * @file TelemetryReceiver.h
+ * @brief Concrete implementation of ITelemetryReceiver interface which uses mavlink for communication with UAV.
+ *
+ * @details This file contains the declaration of a concrete telemtry receiver implementation.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include <vector>
@@ -9,7 +25,8 @@
 #include <iostream>
 
 #include <common/mavlink.h>
-// #include <cubepilot/mavlink.h>
+// #include <cubepilot/mavlink.h> // Even though it is a more specific dialetc of mavlink
+                                  // it doesnt improve the performance
 
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"

@@ -1,3 +1,23 @@
+/**
+ * @file DronePositioningBackend.cpp
+ * @brief Main entry point for the project.
+ *
+ * @details This file contains the `main` function, responsible for
+ * initializing the application and managing its core functionalities.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note This is still a work in progress.
+ *
+ * @warning Make sure to configure the project settings before building- see README
+ */
+
 // Include the Winsock library (lib) file
 #pragma comment(lib, "ws2_32.lib")
 
@@ -30,7 +50,7 @@ void userInputThread() {
 
 
 int main() {
-    std::string raw_input; // C:\Users\bogus\Documents\myProjects\UAV_PW\Cyprian\GCSServer\GCSServer\Cw3c_10.txt
+    std::string raw_input; 
     std::string raw_verbosity;
     std::string raw_port;
 

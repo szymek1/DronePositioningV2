@@ -1,3 +1,20 @@
+/**
+ * @file ConfigUtilities.h
+ * @brief Structures defining objects created based on the config.
+ *
+ * @details This file contains definitions for several structures which represent object
+ *			that can be created from the config.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-26
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include <string>

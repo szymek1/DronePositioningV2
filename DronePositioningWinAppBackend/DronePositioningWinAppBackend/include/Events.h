@@ -1,3 +1,19 @@
+/**
+ * @file Events.h
+ * @brief Possible events which can occur during application run.
+ *
+ * @details This file contains structures declaring apllication events.
+ *
+ * @author Szymon Bogus
+ * @date 2024-07-06
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include <vector>

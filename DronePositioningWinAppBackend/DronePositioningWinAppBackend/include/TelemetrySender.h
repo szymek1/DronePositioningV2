@@ -1,3 +1,19 @@
+/**
+ * @file TelemetrySender.h
+ * @brief Concrete implementation of ITelemetrySender interface using UDP protocol for sending data to a remote endpoint.
+ *
+ * @details This file contains the declaration of a concrete telemetry sender entity implementation.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include <iostream>
