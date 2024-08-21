@@ -151,9 +151,22 @@ For the fresh-first build follow steps from 1 to 4. For another build use step 5
 
 2. Update submodules:
 
-    ```git submodule update```
+    ```git submodule update --init --recursive```
 
-3. Make sure that you have ```vcpkg``` installed by opening the project in MS Visual Studio, then select: ***Project->Properties->Configuration Properties***, once you are there in the left column you should see ```vcpkg```. Click there and make sure that ***Use Vcpkg Manifest:NO***. If you don't see ```vcpkg``` it means it is not installed. You can either install it with MS Visual Studio Installer or from [Microsoft repository](https://github.com/microsoft/vcpkg). For you convenience add path to ```vcpkg/``` to the ```PATH```.
+3. Make sure that you have ```vcpkg``` installed by opening the project in MS Visual Studio, then select: ***Project->Properties->Configuration Properties***, once you are there in the left column you should see ```vcpkg```. Click there and make sure that ***Use Vcpkg Manifest:NO***. If you don't see ```vcpkg``` it means it is not installed. You can install it from [Microsoft repository](https://github.com/microsoft/vcpkg). For you convenience add path to ```vcpkg/``` to the ```PATH```.
+
+Follow these steps to install it (don't install it as Visual Studio feature as this seems to crash when dependencies are about to be installed with the classic mode. If you have vcpkg in ```Program Files\Microsoft Visual Studio\2022\Community\VC``` remove that directory and install with the steps below from scratch- to ```git clone``` to subdir of ```Program Files``` you will perhaps need admin mode for the git bash):
+
+- ```git clone https://github.com/microsoft/vcpkg.git```
+
+- ```cd vcpkg/```
+
+- Use command line as admin: 
+
+    ```bootstrap-vcpkg.bat```
+
+- ```vcpkg integrate install```
+
 4. As ```vcpkg``` is ready, execute from terminal (this may take a while):
 
     ```vcpkg install boost-asio:x64-windows```
@@ -181,6 +194,7 @@ After successful compilation:
 ## TODO
 - fix deadlocks from [ISSUES](README.md#issues) 
 - add another ```ITelemetryReceiver``` using TCP/IP (our custom fligh controller uses ESP8266) server to receive telemetry via network
+- add separate thread for handling RTK corrections
 - add ```IProcessor``` with PDF reports generator: validation algorithms + find plotting library + find pdf generation library
 - write simple front-end, prefferably with UWP to get rid of the terminal
 - migrate with serial connection and networking solely to Boost
