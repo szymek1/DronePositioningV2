@@ -51,7 +51,7 @@ public:
    */
   static void getGPS2UCS(
       float &lat, float &lon, float &latOrg, float &lonOrg,
-      const std::pair<float, float> &meterPerLatitude) const;
+      const std::pair<float, float> &meterPerLatitude);
 
 private:
 
@@ -62,5 +62,5 @@ private:
    * @return pair of two floats: meters per degree of longitude and meters
    *		 per degree of latitude.
    */
-  static const std::pair<float, float> getMetersPerLatitudeDegree_(float& latitude) const;
+  static const std::pair<float, float> getMetersPerLatitudeDegree_(float& latitude);
 };
