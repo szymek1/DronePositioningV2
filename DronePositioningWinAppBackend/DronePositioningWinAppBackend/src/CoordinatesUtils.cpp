@@ -21,7 +21,7 @@
 
 void CoordinatesUtils::getGPS2UCS(
     float &lat, float &lon, float &latOrg, float &lonOrg,
-    const std::pair<float, float> &meterPerLatitude) const {
+    const std::pair<float, float> &meterPerLatitude) {
 
     lat = std::get<0>(meterPerLatitude) * (lat - latOrg); // z-axis in UCS
     lon = std::get<1>(meterPerLatitude) * (lon - lonOrg); // x-axis in UCS
@@ -29,7 +29,7 @@ void CoordinatesUtils::getGPS2UCS(
 }
 
 const std::pair<float, float>
-CoordinatesUtils::getMetersPerLatitudeDegree_(float& latitude) const {
+CoordinatesUtils::getMetersPerLatitudeDegree_(float& latitude) {
 
   constexpr float m1 = 111132.92; // latitude calculation term 1
   constexpr float m2 = -559.82;   // latitude calculation term 2
