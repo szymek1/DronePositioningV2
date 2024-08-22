@@ -108,7 +108,19 @@ In the current version of the project a concrete implementation uses UDP protoco
 TODO
 
 ### Training configuration
-TODO
+In order to prepare training task, there's a need to prepare a configuration file describing it. A sample configuration is available in ```DronePositioningWinAppBackend/DronePositioningWinAppBackend/configurations```.
+
+Such file lists out the following information:
+- Exercise title
+- Author
+- Operator position (used to compute relative position for Unity Coordinate System)
+- Waypoints: checkpoints that UAV must acheive in order to complete a task
+- Markers: reflect waypoints on the ground level
+- Obstackles
+- ScoringMethod: depending on the choice this will impact which object of ```IProcessor``` will be instantiated (TODO)
+- ConnectionInfo: remote endpoint data
+
+Other fields of the configuration file are self explanatory.
 
 ### Doxygen documentation
 Documentation was writtne using Doxygen format. In order to generate roubust documentation, follow these steps:
