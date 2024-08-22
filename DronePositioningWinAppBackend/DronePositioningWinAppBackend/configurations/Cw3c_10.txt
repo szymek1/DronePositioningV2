@@ -1,0 +1,85 @@
+# Config file for DroneVision Flight
+# Lines starting with # are comments and are ignored.
+# Each section beginning with a title ("Title:", "Author:", etc.) should be terminated with a single empty line for the file to be read correctly.
+# Launch server with: python3 serverStart.py --config-file filename.txt
+
+Title:
+przasnysz_Cw3c_10
+
+Author:
+Szymon
+			
+Operator position:
+# Always in GPS lat lon alt
+53.009779233998756 20.92659215232849 140
+
+Waypoints:
+# GPS lat lon alt OR UCS x (right) y (up) z (forward); select WaypointCoordsInGPS value accordingly
+# 0 0 0
+12 4 0
+17 4 -5
+22 4 0
+17 4 5
+12 4 0
+
+Markers:
+# GPS OR UCS center coords + radius
+0 -1.7 0 0.5
+12 -1.7 0 0.5
+17 -1.7 -5 0.5
+22 -1.7 0 0.5
+17 -1.7 5 0.5
+12 -1.7 0 0.5
+17 -1.7 0 0.5
+
+Obstacles:
+# GPS OR UCS center coords + width length height + rotation
+0.0 0.0 -139.89 10 10 10 0 0 0
+
+Configuration parameters:
+#0 CoordsInGPS: 0 if in UCS, 1 if in GPS 
+CoordsInGps:
+0
+#1 AltitudeDiffIgnore: 0 for default, 1 to ignore 
+# (if ignoring all waypoints must have the same altitude)
+AltitudeDiffIgnore:
+0
+#2 GuidelineOffset: vertical offset value in meters, positive is up
+GuidelineOffset:
+0.0
+#3 DistanceWeight
+DistanceWeight:
+1
+#4 AltitudeWeight
+AltitudeWeight:
+1
+#5 SpeedWeight
+SpeedWeight:
+1
+#6 TargetSpeed
+TargetSpeed:
+5.0
+#7 Accuracy: distance to waypoint in meters to set next one as target 
+Accuracy:
+5
+#8 PausingTime: hover time at waypoints, in seconds
+PausingTime:
+2
+#9 TargetBearing: UCS bearing in deg [0,360), -1 for next waypoint, -2 for none
+TargetBearing:
+-1
+#10 ShowWaypoints: 0 or 1; mark waypoints with spheres
+ShowWaypoints:
+1
+#11 ShowGuideline: 0 or 1
+ShowGuideline:
+1
+#12 ScoringMethod: 0 for MAE, 1 for RMSE, or in between for weighted combination
+ScoringMethod:
+1
+
+#13 Network Info
+ConnectionInfo:
+172.28.64.72 54000
+
+File End

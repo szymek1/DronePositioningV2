@@ -1,7 +1,22 @@
+/**
+ * @file ITelemetryReceiver.h
+ * @brief Interface for telemetry receiver.
+ *
+ * @details This file contains the declaration of telemtry receiver interface.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #pragma once
 
 #include "IProcessor.h"
-#include "IObservable.h"
 
 /**
 * @class ITelemetryReceiver
@@ -11,25 +26,32 @@ class ITelemetryReceiver
 {
 public:
 
-	/**
-	* @brief Default destructor.
-	*/
 	virtual ~ITelemetryReceiver() = default;
+
+	/**
+	* @brief Begin receiving telemetry- call appropriate implementation.
+	*/
+	void receive();
+
+	/**
+	* @brief Stop receiving telemetry- call appropriate implementation.
+	*/
+	void stop();
+
+private:
 
 	/**
 	* @brief Begin receiving telemetry.
 	*/
-	virtual void receive() = 0;
+	virtual void receive_() = 0;
 
 	/**
-	* @brief Stop receiving telemetry.
-	*/
-	virtual void stop() = 0;
-
-protected:
+    * @brief Stop receiving telemetry.
+    */
+    virtual void stop_() = 0;
 
 	/**
-	 * @brief Register received telemetry to the EventBus
+	 * @brief Register received telemetry to the EventBus.
 	 */
 	virtual void registerTelemetryEvent_() = 0;
 };

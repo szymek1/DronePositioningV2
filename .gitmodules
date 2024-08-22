@@ -1,0 +1,6 @@
+[submodule "DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/fmt"]
+	path = DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/c_library_v2"]
+	path = DronePositioningWinAppBackend/DronePositioningWinAppBackend/external/c_library_v2
+	url = https://github.com/mavlink/c_library_v2.git

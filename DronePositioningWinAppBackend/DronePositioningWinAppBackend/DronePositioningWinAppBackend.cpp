@@ -1,20 +1,115 @@
-// DronePositioningWinAppBackend.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+/**
+ * @file DronePositioningBackend.cpp
+ * @brief Main entry point for the project.
+ *
+ * @details This file contains the `main` function, responsible for
+ * initializing the application and managing its core functionalities.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note This is still a work in progress.
+ *
+ * @warning Make sure to configure the project settings before building- see README
+ */
 
-#include <iostream>
+// Include the Winsock library (lib) file
+#pragma comment(lib, "ws2_32.lib")
 
-int main()
-{
-    std::cout << "Hello World!\n";
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <cstdio>
+
+#include "include/MainController.h"
+#include "include/EventsBus.h"
+
+
+std::mutex g_terminationMtx;
+std::condition_variable g_terminationCV;
+bool g_shouldStop = false;
+
+void userInputThread() {
+  std::string input;
+  while (std::getline(std::cin, input)) {
+    if (input == "STOP") {
+      {
+        std::lock_guard<std::mutex> lk(g_terminationMtx);
+        g_shouldStop = true;
+      }
+      g_terminationCV.notify_one();
+      break;
+    }
+  }
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+int main() {
+    std::string raw_input; 
+    std::string raw_verbosity;
+    std::string raw_port;
+
+    std::cout << "Please specify the path for the flight configuration file: ";
+    std::getline(std::cin, raw_input);
+    std::filesystem::path p(raw_input);
+    std::cout << "\n";
+
+    std::cout << "Please specify the port for UAV (example: COM4): ";
+    std::getline(std::cin, raw_port);
+
+    std::cout << "\n";
+    bool isVerbositySetCorrect = false;
+    bool verbosity = false;
+    while (!isVerbositySetCorrect) {
+      std::cout << "Do you want the output to be verbose?[yes/no]: ";
+      std::getline(std::cin, raw_verbosity);
+
+      if (raw_verbosity == "yes") {
+        verbosity = true;
+        isVerbositySetCorrect = true;
+      } else if (raw_verbosity == "no") {
+        isVerbositySetCorrect = true;
+      } else {
+        std::cout << "Type yes or no !" << std::endl;
+      }
+    }
+    
+    EventsBus eventsBus = EventsBus();
+    {
+      MainController mc = MainController(p, eventsBus, raw_port, verbosity);
+      std::jthread inputThread(userInputThread);
+      std::jthread runThread([&mc]() {
+        try {
+          mc.run();
+        } catch (const std::runtime_error &e) {
+          std::cerr << "Critical error in MainController::run(): " << e.what()
+                    << std::endl;
+          {
+            std::lock_guard<std::mutex> lk(g_terminationMtx);
+            g_shouldStop = true;
+          }
+          g_terminationCV.notify_one();
+          std::fclose(stdin); // used to shutdown inputThread, otherwise it causes deadlock
+        }
+      });
+     
+
+      std::cout << "Application is running, type STOP to terminate: ";
+      {
+        std::unique_lock<std::mutex> lk(g_terminationMtx);
+        g_terminationCV.wait(lk, [] { return g_shouldStop; });
+      }
+      
+      if (mc.shutdown()) {
+        std::cout << "Application finished without issues\n";
+      }
+
+    } // scope of life for MainController
+
+    return 0;
+}

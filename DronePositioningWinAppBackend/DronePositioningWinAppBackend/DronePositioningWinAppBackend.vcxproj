@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -102,8 +105,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\external\c_library_v2;$(ProjectDir)\external\fmt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +124,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)\external\c_library_v2;$(ProjectDir)\external\fmt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,21 +135,47 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>
+      </Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DronePositioningWinAppBackend.cpp" />
+    <ClCompile Include="include\base\IProcessor.cpp" />
+    <ClCompile Include="include\base\IPublisher.cpp" />
+    <ClCompile Include="include\base\ISubscriber.cpp" />
+    <ClCompile Include="include\base\ITelemetryReceiver.cpp" />
+    <ClCompile Include="include\base\ITelemetrySender.cpp" />
+    <ClCompile Include="src\ConfigurationManager.cpp" />
+    <ClCompile Include="src\ConnectionManager.cpp" />
+    <ClCompile Include="src\Events.cpp" />
     <ClCompile Include="src\EventsBus.cpp" />
+    <ClCompile Include="src\FlightConfig.cpp" />
+    <ClCompile Include="src\MainController.cpp" />
     <ClCompile Include="src\TelemetryProcessor.cpp" />
     <ClCompile Include="src\TelemetryReceiver.cpp" />
     <ClCompile Include="src\TelemetrySender.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\base\IObservable.h" />
+    <ClInclude Include="include\base\IEvent.h" />
+    <ClInclude Include="include\base\IPublisher.h" />
+    <ClInclude Include="include\base\ISubscriber.h" />
     <ClInclude Include="include\base\IProcessor.h" />
     <ClInclude Include="include\base\ITelemetryReceiver.h" />
     <ClInclude Include="include\base\ITelemetrySender.h" />
+    <ClInclude Include="include\ConfigurationManager.h" />
+    <ClInclude Include="include\ConfigUtilities.h" />
+    <ClInclude Include="include\ConnectionManager.h" />
+    <ClInclude Include="include\Events.h" />
     <ClInclude Include="include\EventsBus.h" />
     <ClInclude Include="include\EventType.h" />
+    <ClInclude Include="include\FlightConfig.h" />
+    <ClInclude Include="include\MainController.h" />
     <ClInclude Include="include\TelemetryProcessor.h" />
     <ClInclude Include="include\TelemetryReceiver.h" />
     <ClInclude Include="include\TelemetrySender.h" />
