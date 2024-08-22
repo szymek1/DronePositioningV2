@@ -59,13 +59,13 @@ private:
 
    /**
    * @brief Handle new connection event.
-   * @param event new connection status.
+   * @param event: new connection status.
    */
   void onEvent_(const ConnectionEvent &event) override final;
 
   /**
    * @brief Handle app termination call.
-   * @param event app termination call.
+   * @param event: app termination call.
    */
   void onEvent_(const AppTerminationEvent &event) override final;
 
