@@ -23,8 +23,6 @@
 
 #include "base/ISubscriber.h"
 #include "base/ITelemetryReceiver.h"
-#include "base/ITelemetrySender.h"
-#include "FlightConfig.h"
 #include "EventsBus.h"
 
 
@@ -44,7 +42,6 @@ public:
    */
   explicit ConnectionManager(
                              std::shared_ptr<ITelemetryReceiver> receiver,
-                             std::shared_ptr<ITelemetrySender> sender,
                              bool isVerbose = false);
   ~ConnectionManager() = default;
 
@@ -76,7 +73,6 @@ private:
   * Telemetry Utilities
   ****************************************************/
   std::shared_ptr<ITelemetryReceiver> m_telemetryReceiver;
-  std::shared_ptr<ITelemetrySender> m_telemetrySender;
 
   /****************************************************
   * Threading

@@ -92,16 +92,14 @@ void MainController::run() {
 
       auto m_telemetryReceiverConn =
           std::dynamic_pointer_cast<ITelemetryReceiver>(m_telemetryReceiver);
-      auto m_telemetrySenderConn =
-          std::dynamic_pointer_cast<ITelemetrySender>(m_telemetrySender);
 
-      if (!m_telemetryReceiverConn || !m_telemetrySenderConn) {
+      if (!m_telemetryReceiverConn) {
         throw std::runtime_error(
             "Couldnt create telemetry utilities. Aborting...");
       }
 
       m_connectionManager = std::make_shared<ConnectionManager>(
-          m_telemetryReceiverConn, m_telemetrySenderConn, m_verbose);
+          m_telemetryReceiverConn, m_verbose);
 
       m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetrySender);
       m_bus.addSubscriber(EventType::TELEMETRY_UPDATE, m_telemetryProcessor);

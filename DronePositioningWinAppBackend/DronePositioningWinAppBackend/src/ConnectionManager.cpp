@@ -24,10 +24,9 @@
 
 ConnectionManager::ConnectionManager(
     std::shared_ptr<ITelemetryReceiver> receiver,
-    std::shared_ptr<ITelemetrySender> sender,
     bool isVerbose)
-    : m_telemetryReceiver(receiver), m_telemetrySender(sender), 
-      m_verbose(isVerbose) {
+    : m_telemetryReceiver(receiver), 
+      m_verbose(isVerbose) { 
 
     if (m_verbose) {
         std::cout << "ConnectionManager: instanitated\n";
