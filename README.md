@@ -107,6 +107,9 @@ In the current version of the project a concrete implementation uses UDP protoco
 #### Processor
 TODO
 
+### Training configuration
+TODO
+
 ### Doxygen documentation
 Documentation was writtne using Doxygen format. In order to generate roubust documentation, follow these steps:
 

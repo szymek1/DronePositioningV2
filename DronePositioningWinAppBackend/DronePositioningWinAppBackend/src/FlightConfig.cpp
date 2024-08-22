@@ -1,4 +1,21 @@
+/**
+ * @file FlightConfig.cpp
+ * @brief FlightConfig and configuration display code.
+ *
+ * @details This file contains the declaration for object which represents the flight config.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-26
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ */
+
 #include "../include/FlightConfig.h"
+
 
 configuration::FlightConfig::FlightConfig(OperatorPosition opPos,
 										  std::vector<Waypoint> waypoints,

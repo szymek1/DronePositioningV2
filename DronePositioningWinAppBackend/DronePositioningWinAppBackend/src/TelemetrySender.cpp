@@ -1,3 +1,23 @@
+/**
+ * @file TelemetrySender.cpp
+ * @brief Code of the concrete implementation of ITelemetrySender interface.
+ *
+ * @details This file contains the declaration of the concrete telemetry sender, that uses UDP protocol 
+ *          to send telemetry data to some remote endpoint. It uses WinSock library.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note The issue of TelemetrySender not being able to post information from
+ *       its constructor via EventsBus is the same as described in TelemetryReceiver.cpp.
+ */
+
 #include "../include/TelemetrySender.h"
 
 

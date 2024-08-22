@@ -1,3 +1,28 @@
+/**
+ * @file MainController.cpp
+ * @brief Code for general control of application.
+ *
+ * @details This file contains the declaration of code reponsible for:
+ *          - intialization
+ *          - objects instantiation
+ *          - running the application
+ *          - shutting down the application
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note Unfortunately, for an abrupt, emergency shutdown something doesn't seem to stop
+ *       and the while loop in MainController::run doesn't break. I tried implementing different approaches to break it,
+ *       but for emergency shutdown they all ended-up with deadlock. Maybe a replacement of the while loop
+ *       with a condition variable would help.
+ */
+
 #include "../include/MainController.h"
 
 

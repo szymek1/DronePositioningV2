@@ -1,3 +1,32 @@
+/**
+ * @file TelemetryReceiver.cpp
+ * @brief Code of the concrete implementation of ITelemetryReceiver interface.
+ *
+ * @details This file contains the declaration of the concrete telemetry receiver, which
+ *          utilizes:
+ *          - serial port connection for receiving telemetry data (windows.h)
+ *          - mavlink protocol for receiving telemetry data
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note Emergency shutdown from TelemetryReceiver::receive_ result in deadlock in DronePositioningWinAppBacked.cpp.
+ *       This might not be directly related to some bad code in the method here. However, another issue is the fact that,
+ *       from the level of constructor of TelemetryReceiver it cannot use
+ *       EventsBus to signal some ConnectionEvent- deadlock as subscription map is empty and there's nothing to lock on. 
+ *       This is due to the fact that instantiaion of TelemetryReceiver happend before anything can subscribe to EventsBus- 
+ *       - I'm talking about ConnectionManager. Switching the order in the MainController.cpp should help resolve that issue.
+ *       However ConnectionManager requires TelemetryReceiver as its constructor argument. Apparently TelemetryReceiver should be 
+ *       passed to ConnectionManager::connect, instead of the constructor and some sort of reference to it shoudl be created inside
+ *       ConnectionManager so later on it can also call ConnectionManager::disconnect and ask TelemetryReceiver::stop.
+ */
+
 #include "../include/TelemetryReceiver.h"
 
 
@@ -262,6 +291,8 @@ void TelemetryReceiver::receive_() {
             }
 
             // After collecting mavlink telemetry aggregate them into vector
+            // TODO: synchronize angular position with GPS. Right now
+            // m_currTelemetry has either angular position and (0,0,0) for GPS or otherwise.
             m_currTelemetry = {roll, pitch, yaw, lat, lon, alt};
             registerTelemetryEvent_();
           } 

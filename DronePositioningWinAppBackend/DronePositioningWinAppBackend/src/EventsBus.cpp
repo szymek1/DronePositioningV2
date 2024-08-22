@@ -1,3 +1,23 @@
+/**
+ * @file EventsBus.cpp
+ * @brief Code for the EventsBus.
+ *
+ * @details This file contains the declaration of EventsBus- entity which handles
+ *          transfer of events from publishing objects to subscribers. It uses Publisher-Subscriber pattern.
+ *
+ * @author Szymon Bogus
+ * @date 2024-05-22
+ *
+ * @copyright Copyright 2024 Szymon Bogus
+ * @license Apache License, Version 2.0 (see
+ * https://www.apache.org/licenses/LICENSE-2.0)
+ *
+ * @version 1.0
+ *
+ * @note Mutex errors occur in EventsBus::notifySubscribersOnTopic when application abruptly atempt
+ *       to terminate, but I'm not sure how to diagnose it and fix it.
+ */
+
 #include "../include/EventsBus.h"
 
 
@@ -52,40 +72,12 @@ void EventsBus::notifySubscribersOnTopic(const EventType eventType,
       boost::asio::post(m_pool, [shared_observer, event]() {
         shared_observer->onEvent(event);
       });
-      //shared_observer->onEvent(event);
       ++weak_observer_it;
     } else {
       weak_observer_it = m_subscriptionsMap[eventType].erase(weak_observer_it);
     }
   }
 }
-
-/*
-void EventsBus::notifySubscribersOnTopic(const EventType eventType,
-                                         const Event &event) {
-  SubscribersVec subscribersCopy;
-  {
-    std::lock_guard<std::mutex> lock(m_subscriptionsMutex);
-    subscribersCopy =
-        m_subscriptionsMap[eventType]; // Copy while holding the mutex
-  }
-  for (auto weak_observer_it = subscribersCopy.begin();
-       weak_observer_it != subscribersCopy.end();) {
-    if (auto shared_observer = weak_observer_it->lock()) {
-      std::lock_guard<std::mutex> lock(*m_eventsMtxMap[eventType]);
-      boost::asio::post(m_pool, [shared_observer, event]() {
-        shared_observer->onEvent(event);
-      });
-      // shared_observer->onEvent(event);
-      ++weak_observer_it;
-    } else {
-      weak_observer_it = m_subscriptionsMap[eventType].erase(weak_observer_it);
-    }
-  }
-}
-*/
-
-
 
 EventsBus::EventsBusPublisher::EventsBusPublisher(EventsBus &bus)
     : m_eventsBus(bus) {}
