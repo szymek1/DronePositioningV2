@@ -69,8 +69,9 @@ void MainController::run() {
         false}; // If true, then nothing else has to be instanitated and this
                 // method can begin to finish
     try {
+      OperatorPosition homePos = m_flightConfig->getOperatorPosition();
       m_telemetryReceiver =
-          std::make_shared<TelemetryReceiver>(m_bus, m_portCom, m_verbose);
+          std::make_shared<TelemetryReceiver>(m_bus, homePos, m_portCom, m_verbose);
     } catch (const std::runtime_error &telemetryRcvrErr) {
       isSerialError = true;
       {

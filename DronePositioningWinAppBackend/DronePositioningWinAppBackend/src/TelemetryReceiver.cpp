@@ -30,9 +30,14 @@
 #include "../include/TelemetryReceiver.h"
 
 
-TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
+TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
+                                     const OperatorPosition &homePos,
+                                     const std::string &portCom,
                                      bool isVerbose) 
-    : m_portCom(portCom), m_verbose(isVerbose) { 
+    : m_portCom(portCom), m_homePos(homePos),
+      m_metersPerDegree(
+          CoordinatesUtils::getMetersPerLatitudeDegree(homePos.latitude)),
+      m_verbose(isVerbose) { 
 
   m_publisher = bus.getPublisher();
   m_running.store(false);
@@ -101,6 +106,9 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus, const std::string &portCom,
   if (!GetCommState(m_comSerial, &m_dcbSerialParams)) {
     throw std::runtime_error("Error getting serial port state");
   }
+
+  // m_metersPerDegree =
+  //     CoordinatesUtils::getMetersPerLatitudeDegree(m_homePos.latitude);
 
   if (m_verbose) {
     std::cout << "TelemetryReceiver: instanitated\n";
@@ -294,6 +302,13 @@ void TelemetryReceiver::receive_() {
             // TODO: synchronize angular position with GPS. Right now
             // m_currTelemetry has either angular position and (0,0,0) for GPS or otherwise.
             m_currTelemetry = {roll, pitch, yaw, lat, lon, alt};
+            CoordinatesUtils::getGPS2UCS(
+                m_currTelemetry[3], // latitude
+                m_currTelemetry[4], // longtitude
+                m_homePos.latitude,
+                m_homePos.longitude, 
+                m_metersPerDegree);
+            
             registerTelemetryEvent_();
           } 
 

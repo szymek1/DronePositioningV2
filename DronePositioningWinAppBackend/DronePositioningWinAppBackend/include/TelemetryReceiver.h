@@ -23,6 +23,7 @@
 #include <math.h>
 #include <chrono>
 #include <iostream>
+#include <utility>
 
 #include <common/mavlink.h>
 // #include <cubepilot/mavlink.h> // Even though it is a more specific dialetc of mavlink
@@ -30,6 +31,8 @@
 
 #include "base/ITelemetryReceiver.h"
 #include "EventsBus.h"
+#include "ConfigUtilities.h"
+#include "CoordinatesUtils.h"
 
 
 /**
@@ -44,7 +47,7 @@ public:
 	 * @param bus: EventsBus reference in order to access publisher
 	 * @param isVerbose: logs verbosity flag.
 	 */
-	explicit TelemetryReceiver(EventsBus &bus, const std::string& portCom, bool isVerbose=false); 
+	explicit TelemetryReceiver(EventsBus &bus, const OperatorPosition& homePos, const std::string& portCom, bool isVerbose=false); 
 	~TelemetryReceiver();
 
 
@@ -71,6 +74,13 @@ private:
     const std::string m_portCom;
     HANDLE m_comSerial;
     DCB m_dcbSerialParams;
+
+    /****************************************************
+    * Coordinates system
+    ****************************************************/
+    const OperatorPosition m_homePos;
+    const std::pair<double, double> m_metersPerDegree; // meters per degree latitude [0]
+                                                       // and longtitude [1]
 
     /****************************************************
     * Logging

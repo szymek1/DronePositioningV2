@@ -20,16 +20,16 @@
 #include "../include/CoordinatesUtils.h"
 
 void CoordinatesUtils::getGPS2UCS(
-    float &lat, float &lon, float &latOrg, float &lonOrg,
-    const std::pair<float, float> &meterPerLatitude) {
+    float &lat, float &lon, const double &latOrg, const double &lonOrg,
+    const std::pair<double, double> &meterPerLatitude) {
 
     lat = std::get<0>(meterPerLatitude) * (lat - latOrg); // z-axis in UCS
     lon = std::get<1>(meterPerLatitude) * (lon - lonOrg); // x-axis in UCS
     // alt = alt                                             y-axis in UCS, altitude remains unchanged
 }
 
-const std::pair<float, float>
-CoordinatesUtils::getMetersPerLatitudeDegree(float& latitude) {
+const std::pair<double, double>
+CoordinatesUtils::getMetersPerLatitudeDegree(const double& latitude) {
 
   constexpr float m1 = 111132.92; // latitude calculation term 1
   constexpr float m2 = -559.82;   // latitude calculation term 2
@@ -39,14 +39,15 @@ CoordinatesUtils::getMetersPerLatitudeDegree(float& latitude) {
   constexpr float p2 = -93.5;     // longitude calculation term 2
   constexpr float p3 = 0.118;     // longitude calculation term 3
 
-  latitude = latitude * (M_PI / 180.0);
+  double latitude_ = latitude;
+  latitude_ = latitude_ * (M_PI / 180.0);
 
-  const float metersPerLat = m1 + (m2 * cos(2 * latitude)) +
-                             (m3 * cos(4 * latitude)) +
-                             (m4 * cos(6 * latitude));
+  const double metersPerLat = m1 + (m2 * cos(2 * latitude_)) +
+                             (m3 * cos(4 * latitude_)) +
+                             (m4 * cos(6 * latitude_));
 
-  const float metersPerLon = (p1 * cos(latitude)) + (p2 * cos(3 * latitude)) +
-                             (p3 * cos(5 * latitude));
+  const double metersPerLon = (p1 * cos(latitude_)) + (p2 * cos(3 * latitude_)) +
+                             (p3 * cos(5 * latitude_));
 
   return std::make_pair(metersPerLat, metersPerLon);
 }

@@ -49,8 +49,8 @@ public:
    * @note altitude remains unchanged here
    */
   static void getGPS2UCS(
-      float &lat, float &lon, float &latOrg, float &lonOrg,
-      const std::pair<float, float> &meterPerLatitude);
+      float &lat, float &lon, const double &latOrg, const double &lonOrg,
+      const std::pair<double, double>& metersPerLatitude);
 
   /**
    * @brief Compute how many meters are in one degree of longitude at given
@@ -59,7 +59,7 @@ public:
    * @return pair of two floats: meters per degree of longitude and meters
    *		 per degree of latitude.
    */
-  static const std::pair<float, float>
-  getMetersPerLatitudeDegree(float &latitude);
+  static const std::pair<double, double>
+  getMetersPerLatitudeDegree(const double &latitude);
 
 };
