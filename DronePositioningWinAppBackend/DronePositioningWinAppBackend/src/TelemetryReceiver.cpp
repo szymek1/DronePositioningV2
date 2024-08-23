@@ -154,7 +154,9 @@ void TelemetryReceiver::receive_() {
       }
 
       // Wait for acknowledgement
-      while (true) {
+      int retryCnt = 6;
+      bool isCmdAck{false};
+      while (retryCnt > 0) { // true
         DWORD dwBytesReadAcknowledgeRqst = 0;
         uint8_t acknowledgeData;
 
@@ -172,16 +174,18 @@ void TelemetryReceiver::receive_() {
                     true, "TelemetryReceiver",
                     "Received mavlink request ack from UAV");
                 m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
-
+                isCmdAck = true;
                 break;
               } else {
 
                 ConnectionEvent connEvent(false, "TelemetryReceiver",
-                                          "Didnt receive mavlink request ack from UAV");
-                AppTerminationEvent terminationEvent(true);
+                                          "Didnt receive mavlink request ack from UAV. Trying again...");
+                // AppTerminationEvent terminationEvent(true);
                 m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
-                m_publisher->publish(EventType::APP_TERMINATION,
-                                     terminationEvent);
+                std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+                retryCnt--;
+                // m_publisher->publish(EventType::APP_TERMINATION,
+                //                     terminationEvent);
 
                 break;
               }
@@ -194,6 +198,15 @@ void TelemetryReceiver::receive_() {
           m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
           m_publisher->publish(EventType::APP_TERMINATION, terminationEvent);
         }
+      }
+      if (!isCmdAck) {
+        ConnectionEvent connEvent(
+            false, "TelemetryReceiver",
+            "Didnt receive mavlink request ack from UAV. Timeout!");
+        AppTerminationEvent terminationEvent(true);
+        m_publisher->publish(EventType::CONNECTION_UPDATE, connEvent);
+        m_publisher->publish(EventType::APP_TERMINATION,
+                             terminationEvent);
       }
     }; // End of lambda function
 
@@ -213,20 +226,24 @@ void TelemetryReceiver::receive_() {
     /****************************************************
     * Main loop for receiving telemetry
     ****************************************************/
+    // Telemetry data
+    // Angular
+    float roll{0.0};
+    float pitch{0.0};
+    float yaw{0.0};
+
+    // GPS
+    float lat{0.0};
+    float lon{0.0};
+    float alt{0.0};
+    bool updateGPS{true}; // flag used for synchornizing GPS data with angular data in order
+                          // to make a single data frame complete with both GPS(UCS)  and angular vector
+
 	while (m_running.load()) { 
         DWORD dwBytesRead = 0;
         uint8_t raw_data;
 
-        // Telemetry data
-        // Angular
-        float roll{0.0};
-        float pitch{0.0};
-        float yaw{0.0};
         
-        // GPS
-        float lat{0.0};
-        float lon{0.0};
-        float alt{0.0};
         
         // Read data
         if (ReadFile(m_comSerial, &raw_data, 1, &dwBytesRead, NULL) &&
@@ -243,12 +260,15 @@ void TelemetryReceiver::receive_() {
                 } break;
                 
                 case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: {
-                  mavlink_global_position_int_t gps;
+                  if (updateGPS) {
+                    mavlink_global_position_int_t gps;
+
+                    mavlink_msg_global_position_int_decode(&message, &gps);
+                    lat = gps.lat / 1E7f; // Latitude in degrees * 1E7
+                    lon = gps.lon / 1E7f; // Longitude in degrees * 1E7
+                    alt = gps.alt / 1E7f; // Altitude in millimeters (above MSL)
+                  }
                   
-                  mavlink_msg_global_position_int_decode(&message, &gps);
-                  lat = gps.lat / 1E7f; // Latitude in degrees * 1E7
-                  lon = gps.lon / 1E7f; // Longitude in degrees * 1E7
-                  alt = gps.alt / 1E7f; // Altitude in millimeters (above MSL)
                 } break;
                 
                 case MAVLINK_MSG_ID_HEARTBEAT: {
@@ -302,14 +322,25 @@ void TelemetryReceiver::receive_() {
             // TODO: synchronize angular position with GPS. Right now
             // m_currTelemetry has either angular position and (0,0,0) for GPS or otherwise.
             m_currTelemetry = {roll, pitch, yaw, lat, lon, alt};
-            CoordinatesUtils::getGPS2UCS(
-                m_currTelemetry[3], // latitude
-                m_currTelemetry[4], // longtitude
-                m_homePos.latitude,
-                m_homePos.longitude, 
-                m_metersPerDegree);
+            if (roll != 0.0) {
+              CoordinatesUtils::getGPS2UCS(
+                  m_currTelemetry[3], // latitude   <- this value is being modified by reference
+                  m_currTelemetry[4], // longtitude <- this value is being modified by reference
+                  m_homePos.latitude, 
+                  m_homePos.longitude, 
+                  m_metersPerDegree);
+
+              registerTelemetryEvent_();
+
+              // Reset values
+              lat = 0.0;
+              lon = 0.0;
+              alt = 0.0;
+              updateGPS = true;
+            } else {
+              updateGPS = false;
+            }
             
-            registerTelemetryEvent_();
           } 
 
         } else {
