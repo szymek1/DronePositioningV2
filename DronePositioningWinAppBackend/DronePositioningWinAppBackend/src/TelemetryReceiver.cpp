@@ -94,7 +94,7 @@ TelemetryReceiver::TelemetryReceiver(EventsBus &bus,
 
   //  Fill in some DCB values and set the com state:
   //  57,600 bps, 8 data bits, no parity, and 1 stop bit.
-  m_dcbSerialParams.BaudRate = CBR_57600;  //  baud rate
+  m_dcbSerialParams.BaudRate = CBR_115200; //  baud rate 
   m_dcbSerialParams.ByteSize = 8;          //  data size, xmit and rcv
   m_dcbSerialParams.Parity = NOPARITY;     //  parity bit
   m_dcbSerialParams.StopBits = ONESTOPBIT; //  stop bit
