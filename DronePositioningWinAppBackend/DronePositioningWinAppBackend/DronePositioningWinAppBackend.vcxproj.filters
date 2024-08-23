@@ -60,6 +60,9 @@
     <ClCompile Include="include\base\ITelemetrySender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CoordinatesUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TelemetryReceiver.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\base\IEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CoordinatesUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

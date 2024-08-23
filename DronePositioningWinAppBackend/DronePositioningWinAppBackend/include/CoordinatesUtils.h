@@ -21,7 +21,6 @@
 #pragma once
 
 #include <cmath>
-#include <tuple>
 #include <utility>
 #define M_PI 3.14159265358979323846
 
@@ -53,8 +52,6 @@ public:
       float &lat, float &lon, float &latOrg, float &lonOrg,
       const std::pair<float, float> &meterPerLatitude);
 
-private:
-
   /**
    * @brief Compute how many meters are in one degree of longitude at given
    *        latitude.
@@ -62,5 +59,7 @@ private:
    * @return pair of two floats: meters per degree of longitude and meters
    *		 per degree of latitude.
    */
-  static const std::pair<float, float> getMetersPerLatitudeDegree_(float& latitude);
+  static const std::pair<float, float>
+  getMetersPerLatitudeDegree(float &latitude);
+
 };

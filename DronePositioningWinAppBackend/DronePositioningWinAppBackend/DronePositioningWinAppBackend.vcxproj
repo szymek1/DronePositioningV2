@@ -153,6 +153,7 @@
     <ClCompile Include="include\base\ITelemetrySender.cpp" />
     <ClCompile Include="src\ConfigurationManager.cpp" />
     <ClCompile Include="src\ConnectionManager.cpp" />
+    <ClCompile Include="src\CoordinatesUtils.cpp" />
     <ClCompile Include="src\Events.cpp" />
     <ClCompile Include="src\EventsBus.cpp" />
     <ClCompile Include="src\FlightConfig.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="include\ConfigurationManager.h" />
     <ClInclude Include="include\ConfigUtilities.h" />
     <ClInclude Include="include\ConnectionManager.h" />
+    <ClInclude Include="include\CoordinatesUtils.h" />
     <ClInclude Include="include\Events.h" />
     <ClInclude Include="include\EventsBus.h" />
     <ClInclude Include="include\EventType.h" />

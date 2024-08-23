@@ -29,7 +29,7 @@ void CoordinatesUtils::getGPS2UCS(
 }
 
 const std::pair<float, float>
-CoordinatesUtils::getMetersPerLatitudeDegree_(float& latitude) {
+CoordinatesUtils::getMetersPerLatitudeDegree(float& latitude) {
 
   constexpr float m1 = 111132.92; // latitude calculation term 1
   constexpr float m2 = -559.82;   // latitude calculation term 2

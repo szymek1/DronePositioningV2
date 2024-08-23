@@ -11,7 +11,7 @@ Szymon
 			
 Operator position:
 # Always in GPS lat lon alt
-53.009779233998756 20.92659215232849 140
+52.22042019877721 21.004859921821648 10
 
 Waypoints:
 # GPS lat lon alt OR UCS x (right) y (up) z (forward); select WaypointCoordsInGPS value accordingly
